@@ -248,7 +248,8 @@ function footer() {
           </div>
           <div class="footer__legal">
             <span>&copy; ${esc(site.copyrightYear)} ${esc(site.legalName)}. All rights reserved.</span>
-            <span>Trade License No.: ${ph(site.tradeLicense)}</span>
+            <span>${ph(site.address)}, ${esc(site.addressCity)}</span>
+            <span>Trade License No. ${ph(site.tradeLicense)}</span>
           </div>
         </div>
       </div>
