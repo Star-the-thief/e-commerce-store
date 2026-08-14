@@ -1575,11 +1575,54 @@ button.link-quiet:hover {
   object-fit: cover;
 }
 
+/*
+ * Copy-side scrim: guarantees text contrast over .hero__bg regardless of what
+ * that image is — the generated SVG's own built-in gradient only worked for
+ * itself, so swapping in real photography (Spec 3.5) silently broke contrast.
+ * This lives here instead, once, so it protects every future hero photo too.
+ * Two layers: a left-to-right sweep for the headline column, and a bottom
+ * sweep (full width) for .hero__trust. Verified against the current photo's
+ * actual pixel brightness to clear WCAG AA at every text position.
+ */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 60%,
+      rgba(8, 59, 44, 0.4) 78%,
+      rgba(8, 59, 44, 0.8) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(8, 59, 44, 0.92) 0%,
+      rgba(8, 59, 44, 0.86) 15%,
+      rgba(8, 59, 44, 0.72) 30%,
+      rgba(8, 59, 44, 0.5) 45%,
+      rgba(8, 59, 44, 0.24) 60%,
+      rgba(8, 59, 44, 0.06) 78%,
+      rgba(8, 59, 44, 0) 100%
+    );
+}
+
 .hero__inner {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   padding-block: var(--sp-8);
   max-width: 44ch;
+}
+
+.hero__inner .eyebrow,
+.hero h1,
+.hero__sub {
+  /* Belt-and-suspenders alongside the scrim above — a soft dark halo directly
+     behind the glyphs, so small text (the eyebrow especially) stays crisp
+     even over a locally bright spot in the photo (a sequin, a highlight). */
+  text-shadow: 0 1px 3px rgba(8, 59, 44, 0.55), 0 2px 20px rgba(8, 59, 44, 0.3);
 }
 
 @media (min-width: 768px) {
@@ -1616,14 +1659,15 @@ button.link-quiet:hover {
 
 .hero__trust {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   flex-wrap: wrap;
   gap: var(--sp-3) var(--sp-6);
   padding-block: var(--sp-4);
   border-top: 1px solid rgba(250, 247, 240, 0.16);
   font-size: var(--fs-small);
-  color: rgba(250, 247, 240, 0.78);
+  color: rgba(250, 247, 240, 0.9);
+  text-shadow: 0 1px 3px rgba(8, 59, 44, 0.55), 0 2px 20px rgba(8, 59, 44, 0.3);
 }
 
 .hero__trust span {

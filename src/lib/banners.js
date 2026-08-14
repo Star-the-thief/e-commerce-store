@@ -25,11 +25,6 @@ function bannerDefs(w, h) {
       <stop offset="0.5" stop-color="${CHAMPAGNE}" stop-opacity="0.08"/>
       <stop offset="1" stop-color="${CHAMPAGNE}" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="${EMERALD_DARK}" stop-opacity="0.72"/>
-      <stop offset="0.62" stop-color="${EMERALD_DARK}" stop-opacity="0.08"/>
-      <stop offset="1" stop-color="${EMERALD_DARK}" stop-opacity="0"/>
-    </linearGradient>
     <clipPath id="frame"><rect width="${w}" height="${h}"/></clipPath>`;
 }
 
@@ -92,8 +87,9 @@ ${bannerDefs(w, h)}
       <path d="M-34 -44 L-34 44 M34 -44 L34 44 M-34 0 L34 0" stroke="${IVORY}" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
     </g>
 
-    <!-- copy-side scrim so the headline always holds contrast -->
-    <rect width="${w}" height="${h}" fill="url(#fade)"/>
+    <!-- Copy-side contrast scrim now lives in CSS (.hero::before in
+         main.css), applied uniformly whether this generated artwork or real
+         photography fills .hero__bg — see the comment there for why. -->
     <path d="M0 872 L${w} 872" stroke="${CHAMPAGNE}" stroke-width="2" opacity="0.35"/>
   </g>
 </svg>
