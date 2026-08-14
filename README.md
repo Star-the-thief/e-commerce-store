@@ -96,13 +96,24 @@ the key.
 
 ### The remaining Section 11 items
 
-**Real product photography.** Product visuals are generated SVGs (see §5 below).
-To swap in photography, drop your files into `dist/assets/img/products/` using
-the existing filenames — `{product-id}-1`, `-2`, `-3` — keeping the aspect
-ratios (**garments 4:5**, **cosmetics 1:1**). If you switch to `.jpg`, update the
-one line that builds the paths in
-[`src/lib/products.js`](src/lib/products.js) (`images:`) and rebuild. No layout
-or markup changes are needed.
+**Real product photography.** In progress — 12 of 38 products (23 of the ~76
+minimum images) have real photography as of this build; the rest still show
+the generated placeholder visuals until more arrive.
+
+To add or replace a product's photos, drop the files into
+[`src/data/product-photos/`](src/data/product-photos/) named
+`{product-id}-1.jpg` (and `-2`, `-3` — jpg/jpeg/png/webp all work), matching
+the aspect ratio used elsewhere (**garments 4:5**, **cosmetics 1:1**), then
+`npm run build`. That's the only step — `src/lib/real-photos.js` detects the
+files automatically, `src/lib/products.js` swaps them into that product's
+gallery, and every page, card and JSON-LD block that references the product
+picks it up with no further changes.
+
+A product with **any** real photo uses *only* its real photos (never mixed
+with a generated one) — so a product with just 1 of its eventual 2–3 photos
+will show a single-image gallery in the meantime, rather than pairing a real
+photo with a cartoon one. That's intentional: an honest partial gallery beats
+an inconsistent one (Spec 2).
 
 **Live card payment gateway.** Card Payment is deliberately visible-but-disabled
 at checkout. To activate it, see the marked block in

@@ -25,6 +25,7 @@ const DIST = path.join(ROOT, 'dist');
 
 const catalog = require('./src/lib/products');
 const { productImage } = require('./src/lib/images');
+const { photosFor } = require('./src/lib/real-photos');
 const { banners } = require('./src/lib/banners');
 const site = require('./src/data/site.json');
 
@@ -119,10 +120,23 @@ function build() {
       })};\n`
   );
 
-  /* --- 3. Product imagery (Spec 3.5) ----------------------------- */
+  /* --- 3. Product imagery (Spec 3.5) ------------------------------
+     Real photography (src/data/product-photos/) wins per-product and is
+     copied as-is; everything else still gets the generated placeholder set. */
+  let realImages = 0;
+  let generatedImages = 0;
   catalog.products.forEach((p) => {
-    for (let view = 1; view <= 3; view += 1) {
-      write(`assets/img/products/${p.id}-${view}.svg`, productImage(p, view));
+    const real = photosFor(p.id);
+    if (real.length) {
+      real.forEach((r) => {
+        copy(r.file, `assets/img/products/${p.id}-${r.view}.${r.ext}`);
+        realImages += 1;
+      });
+    } else {
+      for (let view = 1; view <= 3; view += 1) {
+        write(`assets/img/products/${p.id}-${view}.svg`, productImage(p, view));
+        generatedImages += 1;
+      }
     }
   });
 
@@ -215,10 +229,14 @@ function build() {
 
   const ms = Date.now() - started;
   const pages = 16;
+  const productsWithPhotos = catalog.products.filter((p) => p.hasRealPhotos).length;
   console.log(
     `Hadaf Venture — build complete in ${ms}ms\n` +
       `  ${pages} page templates  ·  ${catalog.products.length + 15} HTML files\n` +
-      `  ${catalog.products.length} products  ·  ${catalog.products.length * 3} product visuals\n` +
+      `  ${catalog.products.length} products (${productsWithPhotos} with real photography, ${
+        catalog.products.length - productsWithPhotos
+      } placeholder)\n` +
+      `  ${realImages} real photos  ·  ${generatedImages} generated visuals\n` +
       `  ${fileCount} files written to dist/`
   );
 }

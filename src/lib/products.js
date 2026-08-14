@@ -9,6 +9,7 @@
  */
 
 const raw = require('../data/products.json');
+const { photosFor } = require('./real-photos');
 
 function slugify(str) {
   return String(str)
@@ -90,8 +91,19 @@ const products = raw.map((p, index) => {
     aspect: isGarment ? '4 / 5' : '1 / 1',
     imgW: 1000,
     imgH: isGarment ? 1250 : 1000,
-    // Section 3.5 naming convention: img/products/{id}-1..3
-    images: [1, 2, 3].map((n) => `/assets/img/products/${p.id}-${n}.svg`),
+    // Section 3.5 naming convention: img/products/{id}-1..3. Real photography
+    // (src/data/product-photos/) always wins and is never mixed with the
+    // generated placeholder set within one product's gallery — see
+    // src/lib/real-photos.js for why.
+    ...(() => {
+      const real = photosFor(p.id);
+      return {
+        images: real.length
+          ? real.map((r) => r.url)
+          : [1, 2, 3].map((n) => `/assets/img/products/${p.id}-${n}.svg`),
+        hasRealPhotos: real.length > 0,
+      };
+    })(),
     features: features(p),
     detailRows: detailRows(p),
   });

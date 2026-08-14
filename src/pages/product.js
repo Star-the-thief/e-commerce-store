@@ -99,7 +99,7 @@ function build(p) {
       sku: p.sku,
       description: p.shortDescription,
       category: `${p.category} > ${p.subcategory}`,
-      image: [`${site.url}${p.images[0]}`, `${site.url}${p.images[1]}`],
+      image: p.images.slice(0, 2).map((src) => `${site.url}${src}`),
       brand: { '@type': 'Brand', name: site.name },
       offers: {
         '@type': 'Offer',
@@ -145,13 +145,16 @@ function build(p) {
     p.imgH
   }" fetchpriority="high" decoding="async" data-gallery-img>
               </div>
-              <div class="gallery__thumbs">
+              ${
+                p.images.length > 1
+                  ? `<div class="gallery__thumbs">
             ${gallery}
-              </div>
-              <p class="meta mt-3">${icon(
-                'zoom',
-                'icon icon--sm'
-              )} Hover to zoom on desktop. Studio visuals — real product photography coming soon.</p>
+              </div>`
+                  : ''
+              }
+              <p class="meta mt-3">${icon('zoom', 'icon icon--sm')} Hover to zoom on desktop.${
+    p.hasRealPhotos ? '' : ' Studio visuals — real product photography coming soon.'
+  }</p>
             </div>
 
             <!-- Buy column -->
