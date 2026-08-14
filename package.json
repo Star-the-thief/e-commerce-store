@@ -1,0 +1,16 @@
+{
+  "name": "hadaf-venture-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hadaf Venture — fashion and beauty e-commerce website (static build, Dubai, UAE)",
+  "scripts": {
+    "build": "node build.js --clean",
+    "start": "node build.js --clean && node serve.js",
+    "serve": "node serve.js",
+    "dev": "node build.js --clean && node serve.js"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "license": "UNLICENSED"
+}

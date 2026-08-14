@@ -1,0 +1,44 @@
+{
+  "_comment": "SINGLE SOURCE OF TRUTH for business details and the Section 11 placeholder items. Update the values here and re-run `npm run build` — every page picks the change up automatically.",
+
+  "name": "Hadaf Venture",
+  "domain": "hadafventureforclothing.com",
+  "url": "https://hadafventureforclothing.com",
+  "tagline": "Everyday Style, Effortless Beauty.",
+  "description": "Online fashion and beauty store offering stylish, affordable garments and quality cosmetic essentials for women in the UAE.",
+  "email": "info@hadafventureforclothing.com",
+
+  "_placeholders_comment": "Section 11 — intentionally visible bracketed placeholders. Replace the string with the real value when the client provides it; do NOT delete the key.",
+  "phone": "[To be added]",
+  "address": "[Address to be added]",
+  "addressCity": "Dubai, United Arab Emirates",
+  "tradeLicense": "[To be added]",
+  "businessHours": "[e.g. Sun–Thu, 9am–6pm — to be confirmed]",
+
+  "_social_comment": "Section 11 — social handles pending. Leave href as '#' until handles are provided.",
+  "social": [
+    { "label": "Instagram", "href": "#" },
+    { "label": "Facebook", "href": "#" },
+    { "label": "TikTok", "href": "#" },
+    { "label": "WhatsApp", "href": "#" }
+  ],
+
+  "currency": "AED",
+  "deliveryFee": 15.0,
+  "freeDeliveryThreshold": 150.0,
+  "deliveryDays": "4–5 working days",
+  "returnWindowDays": 7,
+  "announcement": "Now shipping across the UAE",
+  "legalUpdated": "14 August 2026",
+  "copyrightYear": "2026",
+
+  "emirates": [
+    "Abu Dhabi",
+    "Dubai",
+    "Sharjah",
+    "Ajman",
+    "Umm Al Quwain",
+    "Ras Al Khaimah",
+    "Fujairah"
+  ]
+}

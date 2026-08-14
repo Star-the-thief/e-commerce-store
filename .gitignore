@@ -1,0 +1,14 @@
+﻿# Build output — regenerate with `npm run build`
+dist/
+
+# Dependencies (this project has none, but keep the guard)
+node_modules/
+
+# OS / editor noise
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+.idea/
+.vscode/
