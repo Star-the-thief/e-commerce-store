@@ -14,7 +14,11 @@ const https = require('https');
 
 function request(method, path, formBody) {
   return new Promise((resolve, reject) => {
-    const key = process.env.STRIPE_SECRET_KEY;
+    // .trim() defensively — a key pasted into Vercel's env var UI can pick up
+    // a trailing newline or stray whitespace, which Node's http module then
+    // rejects outright ("Invalid character in header content") since it's not
+    // a legal HTTP header value. Trimming here means that never breaks checkout.
+    const key = (process.env.STRIPE_SECRET_KEY || '').trim();
     if (!key) {
       reject(new Error('Card payments are not configured yet.'));
       return;
