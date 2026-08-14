@@ -96,9 +96,11 @@ the key.
 
 ### The remaining Section 11 items
 
-**Real product photography.** In progress — 21 of 38 products (42 of the ~76
-minimum images) have real photography as of this build; the rest still show
-the generated placeholder visuals until more arrive.
+**Real product photography.** In progress — 34 of 38 products (68 of the ~76
+minimum images) have real photography as of this build; all 21 Fashion
+products are complete, along with 13 of 17 Beauty products. The remaining 4
+(both bath & body items not yet photographed, the hair serum, and the makeup
+brush set) still show the generated placeholder visuals until more arrive.
 
 To add or replace a product's photos, drop the files into
 [`src/data/product-photos/`](src/data/product-photos/) named
