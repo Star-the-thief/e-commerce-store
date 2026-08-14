@@ -2,7 +2,7 @@
 
 /** About, Contact, FAQ and 404 — Specification Sections 6.7, 6.8, 6.9, 6.14. */
 
-const { site, esc, page, crumbs, ph, valueProps, newsletterBand } = require('../lib/layout');
+const { site, esc, page, crumbs, ph, phoneLink, valueProps, newsletterBand } = require('../lib/layout');
 const { icon } = require('../lib/icons');
 const { productGrid, sectionHead } = require('../lib/components');
 const catalog = require('../lib/products');
@@ -123,7 +123,7 @@ ${newsletterBand()}`;
 function contact() {
   const details = [
     ['mail', 'Email', `<a href="mailto:${esc(site.email)}">${esc(site.email)}</a>`],
-    ['whatsapp', 'Phone / WhatsApp', ph(site.phone, 'light')],
+    ['whatsapp', 'Phone / WhatsApp', phoneLink('light')],
     ['pin', 'Address', `${ph(site.address, 'light')}, ${esc(site.addressCity)}`],
     ['clock', 'Business hours', ph(site.businessHours, 'light')],
   ]
@@ -231,12 +231,25 @@ function contact() {
             ${details}
                 </ul>
 
-                <!-- Map: intentionally a styled placeholder until an address exists (Spec 6.8) -->
-                <div class="map-placeholder">
+                <!-- Map: a styled placeholder until an address exists, a real embed
+                     once it does (Spec 6.8). site.address is the only source. -->
+                ${
+                  /^\[.*\]$/.test(site.address)
+                    ? `<div class="map-placeholder">
                   ${icon('map', 'icon icon--lg')}
                   <p><strong>Map available once our address is confirmed</strong></p>
                   <p class="meta">We are registered in Dubai, United Arab Emirates. The exact address and map will be published here once finalised.</p>
-                </div>
+                </div>`
+                    : `<div class="map-embed">
+                  <iframe
+                    src="https://www.google.com/maps?q=${encodeURIComponent(
+                      `${site.address}, ${site.addressCity}`
+                    )}&amp;output=embed"
+                    title="${esc(site.name)} — ${esc(site.address)}"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>`
+                }
               </div>
 
               <div class="panel mt-5">

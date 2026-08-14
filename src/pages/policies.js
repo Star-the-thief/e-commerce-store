@@ -13,7 +13,7 @@
  * here wholesale rather than editing them in place.
  */
 
-const { site, esc, page, crumbs, ph } = require('../lib/layout');
+const { site, esc, page, crumbs, ph, phoneLink } = require('../lib/layout');
 const { icon } = require('../lib/icons');
 
 const POLICY_PAGES = [
@@ -33,7 +33,7 @@ function contactBlock(heading, lead) {
             ${lead ? `<p>${esc(lead)}</p>\n            ` : ''}<address>
               ${esc(site.name)}<br>
               Email: <a href="mailto:${esc(site.email)}">${esc(site.email)}</a><br>
-              Phone/WhatsApp: ${ph(site.phone, 'light')}<br>
+              Phone/WhatsApp: ${phoneLink('light')}<br>
               ${ph(site.address, 'light')}, ${esc(site.addressCity)}
             </address>`;
 }
@@ -173,7 +173,7 @@ function returns() {
               <p>To request a return, contact us at:</p>
               <ul>
                 <li>Email: <a href="mailto:${esc(site.email)}">${esc(site.email)}</a></li>
-                <li>WhatsApp/Phone: ${ph(site.phone, 'light')}</li>
+                <li>WhatsApp/Phone: ${phoneLink('light')}</li>
               </ul>
               <p>Please include your order number, name, item(s) you wish to return, and reason for the return. Our customer service team will provide the next steps after reviewing your request.</p>
 

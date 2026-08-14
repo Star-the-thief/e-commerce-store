@@ -9,18 +9,19 @@
   "email": "info@hadafventureforclothing.com",
 
   "_placeholders_comment": "Section 11 — intentionally visible bracketed placeholders. Replace the string with the real value when the client provides it; do NOT delete the key.",
-  "phone": "[To be added]",
-  "address": "[Address to be added]",
+  "phone": "+971 54 477 5584",
+  "phoneIntl": "971544775584",
+  "address": "Office #503-A, Bu Haleeba Plaza, Al Muraqqabat",
   "addressCity": "Dubai, United Arab Emirates",
-  "tradeLicense": "[To be added]",
+  "tradeLicense": "1545509",
   "businessHours": "[e.g. Sun–Thu, 9am–6pm — to be confirmed]",
 
-  "_social_comment": "Section 11 — social handles pending. Leave href as '#' until handles are provided.",
+  "_social_comment": "Section 11 — social handles pending. Leave href as '#' until handles are provided. WhatsApp is wired to the real number above.",
   "social": [
     { "label": "Instagram", "href": "#" },
     { "label": "Facebook", "href": "#" },
     { "label": "TikTok", "href": "#" },
-    { "label": "WhatsApp", "href": "#" }
+    { "label": "WhatsApp", "href": "https://wa.me/971544775584" }
   ],
 
   "currency": "AED",

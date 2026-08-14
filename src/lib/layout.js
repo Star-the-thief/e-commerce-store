@@ -36,6 +36,19 @@ function ph(value, variant) {
   return esc(v);
 }
 
+/**
+ * Phone/WhatsApp display. Once a real number exists (site.phoneIntl is set),
+ * every mention of it becomes a tap-to-chat WhatsApp link — the spec routes
+ * order confirmation and support entirely through WhatsApp/email, so that is
+ * the more useful destination than a bare tel: link. Falls back to the
+ * bracketed placeholder styling via ph() until a number is provided.
+ */
+function phoneLink(variant) {
+  const v = String(site.phone);
+  if (/^\[.*\]$/.test(v) || !site.phoneIntl) return ph(v, variant);
+  return `<a href="https://wa.me/${site.phoneIntl}">${esc(v)}</a>`;
+}
+
 const NAV = [
   { label: 'Home', href: '/' },
   { label: 'Shop Fashion', href: '/shop/fashion/' },
@@ -123,7 +136,7 @@ function header(active) {
       </div>
       <div class="drawer__foot">
         <p><a href="mailto:${esc(site.email)}">${esc(site.email)}</a></p>
-        <p class="mt-3">Phone/WhatsApp: ${ph(site.phone, 'light')}</p>
+        <p class="mt-3">Phone/WhatsApp: ${phoneLink('light')}</p>
       </div>
     </aside>`;
 }
@@ -188,7 +201,7 @@ function footer() {
               <li>${icon(
                 'whatsapp',
                 'icon icon--sm'
-              )}<span>Phone/WhatsApp: ${ph(site.phone)}</span></li>
+              )}<span>Phone/WhatsApp: ${phoneLink()}</span></li>
               <li>${icon('pin', 'icon icon--sm')}<span>Address: ${ph(site.address)}, ${esc(
       site.addressCity
     )}</span></li>
@@ -439,6 +452,7 @@ module.exports = {
   esc,
   money,
   ph,
+  phoneLink,
   page,
   crumbs,
   valueProps,
