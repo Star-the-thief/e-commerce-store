@@ -236,13 +236,17 @@ function footer() {
         <div class="footer__bottom">
           <div class="pay-badges">
             <span class="pay-badge">${icon('cash', 'icon icon--sm')} Cash on Delivery</span>
-            <span class="pay-badge pay-badge--soon">${icon(
-              'card',
-              'icon icon--sm'
-            )} Card Payment <em class="pay-badge__soon">Coming Soon</em></span>
+            ${
+              process.env.STRIPE_SECRET_KEY
+                ? `<span class="pay-badge">${icon('card', 'icon icon--sm')} Card Payment</span>`
+                : `<span class="pay-badge pay-badge--soon">${icon(
+                    'card',
+                    'icon icon--sm'
+                  )} Card Payment <em class="pay-badge__soon">Coming Soon</em></span>`
+            }
           </div>
           <div class="footer__legal">
-            <span>&copy; ${esc(site.copyrightYear)} ${esc(site.name)}. All rights reserved.</span>
+            <span>&copy; ${esc(site.copyrightYear)} ${esc(site.legalName)}. All rights reserved.</span>
             <span>Trade License No.: ${ph(site.tradeLicense)}</span>
           </div>
         </div>

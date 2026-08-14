@@ -2,6 +2,8 @@
   "_comment": "SINGLE SOURCE OF TRUTH for business details and the Section 11 placeholder items. Update the values here and re-run `npm run build` — every page picks the change up automatically.",
 
   "name": "Hadaf Venture",
+  "_legalName_comment": "Full registered name, used only in the footer copyright line — the brand name above stays 'Hadaf Venture' everywhere else (header, nav, page titles, meta tags).",
+  "legalName": "Hadaf Venture For Clothing Line",
   "domain": "hadafventureforclothing.com",
   "url": "https://hadafventureforclothing.com",
   "tagline": "Everyday Style, Effortless Beauty.",
@@ -31,7 +33,7 @@
   "returnWindowDays": 7,
   "announcement": "Now shipping across the UAE",
   "legalUpdated": "14 August 2026",
-  "copyrightYear": "2026",
+  "copyrightYear": "2025",
 
   "emirates": [
     "Abu Dhabi",

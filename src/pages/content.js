@@ -289,6 +289,8 @@ ${valueProps('surface')}`;
 /* ------------------------------------------------------------------ *
  * FAQ — Spec 6.9 (final copy, verbatim)
  * ------------------------------------------------------------------ */
+const CARD_ENABLED = Boolean(process.env.STRIPE_SECRET_KEY);
+
 const FAQS = [
   {
     q: 'How long does delivery take?',
@@ -296,7 +298,9 @@ const FAQS = [
   },
   {
     q: 'What payment methods do you accept?',
-    a: 'We currently accept Cash on Delivery. Card payment is coming soon.',
+    a: CARD_ENABLED
+      ? 'We accept Cash on Delivery and secure debit/credit card payments via our payment provider, Stripe.'
+      : 'We currently accept Cash on Delivery. Card payment is coming soon.',
   },
   {
     q: 'What is your return policy?',

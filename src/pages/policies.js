@@ -265,6 +265,16 @@ function privacy() {
  * 9.3 Terms & Conditions — VERBATIM
  * ================================================================== */
 function terms() {
+  // Section 5 is the one clause the spec explicitly ties to whether a live
+  // card gateway exists (Section 9.3 §5: "will be clearly indicated as
+  // available on the Website once active") — kept in lockstep with the same
+  // STRIPE_SECRET_KEY check that gates the checkout UI, so this text can
+  // never say more than the site actually does.
+  const cardEnabled = Boolean(process.env.STRIPE_SECRET_KEY);
+  const paymentClause = cardEnabled
+    ? 'We accept Cash on Delivery and debit/credit card payments for all orders within the UAE. Card payments are processed securely by our payment provider, Stripe; we do not store or have access to your full card details.'
+    : 'At present, we accept Cash on Delivery for all orders within the UAE. Card payment will be introduced in the future and will be clearly indicated as available on the Website once active. We do not currently store or process card payment details.';
+
   const content = `              <p>These Terms &amp; Conditions ("Terms") govern your use of hadafventureforclothing.com (the "Website") and any purchase made through it. By using the Website or placing an order, you agree to these Terms.</p>
 
               <h2>1. About Us</h2>
@@ -283,7 +293,7 @@ function terms() {
               <p>Placing an order through the Website constitutes an offer to purchase. All orders are subject to acceptance and confirmation by us, which we will communicate via WhatsApp or email. We reserve the right to refuse or cancel any order, including in cases of suspected fraud, pricing errors, or product unavailability.</p>
 
               <h2>5. Payment</h2>
-              <p>At present, we accept Cash on Delivery for all orders within the UAE. Card payment will be introduced in the future and will be clearly indicated as available on the Website once active. We do not currently store or process card payment details.</p>
+              <p>${paymentClause}</p>
 
               <h2>6. Delivery</h2>
               <p>We currently deliver within the United Arab Emirates only. Delivery timelines and fees are set out in our <a href="/shipping-policy/">Shipping &amp; Delivery Policy</a>, which forms part of these Terms.</p>

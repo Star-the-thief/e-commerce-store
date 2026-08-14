@@ -1,14 +1,20 @@
 /**
  * Checkout — Specification Section 6.5.
- * Client-side validation on all required fields, a read-only order recap,
- * Cash on Delivery as the only selectable payment method, and order creation
- * on submit (Spec 7.3).
+ * Client-side validation on all required fields, a read-only order recap, and
+ * order creation on submit (Spec 7.3).
  *
- * PAYMENT (deliberate, do not change without the client's instruction):
- * Cash on Delivery is preselected and is the only selectable option. Card
- * Payment is rendered visible but disabled and labelled "Coming Soon"; there
- * is no live gateway, so nothing on this page may imply a card charge can be
- * completed. The submitted order always records "Cash on Delivery".
+ * PAYMENT: Cash on Delivery is always preselected. Whether Card Payment is
+ * selectable at all is decided at BUILD time in src/pages/commerce.js
+ * (`cardEnabled`, driven by the STRIPE_SECRET_KEY environment variable) — a
+ * disabled radio can never become `:checked`, so this script only needs to
+ * branch on whichever value ends up selected:
+ *   - "Cash on Delivery": unchanged — log the order locally and go straight
+ *     to the confirmation page, as before.
+ *   - "Card Payment": ask /api/create-checkout-session to build a Stripe
+ *     Checkout Session (server re-derives every price; nothing here is
+ *     trusted) and redirect the browser to Stripe's hosted payment page. The
+ *     order itself is only recorded once /api/verify-checkout-session
+ *     confirms payment actually succeeded — see confirmation.js.
  */
 (function () {
   'use strict';
@@ -163,6 +169,22 @@
   });
 
   /* ---------------- Submit ---------------- */
+  var submitBtn = form.querySelector('[data-place-order]');
+  var submitBtnDefaultHtml = submitBtn ? submitBtn.innerHTML : '';
+
+  function showAlert(message) {
+    if (!alertEl) return;
+    var span = alertEl.querySelector('span');
+    if (span) span.textContent = message;
+    alertEl.classList.add('is-visible');
+  }
+
+  function setSubmitting(isSubmitting, label) {
+    if (!submitBtn) return;
+    submitBtn.disabled = isSubmitting;
+    submitBtn.innerHTML = isSubmitting ? label : submitBtnDefaultHtml;
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -174,7 +196,7 @@
 
     var firstBad = validateAll();
     if (firstBad) {
-      if (alertEl) alertEl.classList.add('is-visible');
+      showAlert('Please complete the highlighted fields before placing your order.');
       var f = fieldOf(firstBad);
       if (f) {
         f.input.focus();
@@ -190,10 +212,56 @@
       return el ? el.value.trim() : '';
     };
 
+    var customer = { fullName: value('fullName'), email: value('email'), phone: value('phone') };
+    var deliveryAddr = {
+      emirate: value('emirate'),
+      area: value('area'),
+      street: value('street'),
+      building: value('building'),
+      country: 'United Arab Emirates',
+    };
+    var notes = value('notes');
+
+    var paymentInput = form.querySelector('input[name="payment"]:checked');
+    var payment = paymentInput ? paymentInput.value : 'Cash on Delivery';
+
+    if (payment === 'Card Payment') {
+      // A disabled radio can never be :checked, so reaching this branch means
+      // Card Payment was actually built enabled (STRIPE_SECRET_KEY is set —
+      // see src/pages/commerce.js). Hand off to Stripe's hosted checkout;
+      // the order is only recorded once payment is verified (confirmation.js).
+      setSubmitting(true, 'Redirecting to secure payment…');
+      fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: lines.map(function (l) {
+            return { productId: l.productId, variant: l.variant, quantity: l.quantity };
+          }),
+          customer: customer,
+          delivery: deliveryAddr,
+          notes: notes,
+        }),
+      })
+        .then(function (res) {
+          return res.json().then(function (data) {
+            if (!res.ok) throw new Error((data && data.error) || 'Could not start checkout.');
+            return data;
+          });
+        })
+        .then(function (data) {
+          window.location.href = data.url;
+        })
+        .catch(function (err) {
+          setSubmitting(false);
+          showAlert(err.message || 'Could not start checkout. Please try again, or choose Cash on Delivery.');
+        });
+      return;
+    }
+
     var order = {
       reference: HV.orders.reference(),
       placedAt: new Date().toISOString(),
-      // Cash on Delivery is the only live method at launch (Spec 6.5 / 9.3 §5).
       paymentMethod: 'Cash on Delivery',
       items: lines.map(function (l) {
         return {
@@ -212,19 +280,9 @@
         total: totals.total,
         currency: 'AED',
       },
-      customer: {
-        fullName: value('fullName'),
-        email: value('email'),
-        phone: value('phone'),
-      },
-      delivery: {
-        emirate: value('emirate'),
-        area: value('area'),
-        street: value('street'),
-        building: value('building'),
-        country: 'United Arab Emirates',
-      },
-      notes: value('notes'),
+      customer: customer,
+      delivery: deliveryAddr,
+      notes: notes,
     };
 
     // TODO(backend): POST `order` to a real order-submission API and only clear

@@ -123,6 +123,9 @@ function cart() {
  * Checkout — Spec 6.5
  * ------------------------------------------------------------------ */
 function checkout() {
+  // Evaluated once at build time — see the payment-method block below.
+  const cardEnabled = Boolean(process.env.STRIPE_SECRET_KEY);
+
   const emirates = site.emirates
     .map((e) => `<option value="${esc(e)}">${esc(e)}</option>`)
     .join('\n                    ');
@@ -262,7 +265,13 @@ function checkout() {
                 </div>
               </div>
 
-              <!-- 3. Payment method (Spec 6.5 — exact behaviour) -->
+              <!-- 3. Payment method. Cash on Delivery is always live and
+                   always the default. Card Payment is enabled only when
+                   STRIPE_SECRET_KEY exists as a Vercel environment variable at
+                   build time (see README "Card payments") — until then it
+                   stays visible, disabled and marked Coming Soon exactly per
+                   Spec 6.5, so nothing here can imply a card charge is
+                   possible when no gateway is actually configured. -->
               <div class="panel checkout-step">
                 <h2 class="checkout-step__title">Payment Method</h2>
                 <div class="pay-list">
@@ -277,9 +286,16 @@ function checkout() {
                     </span>
                   </label>
 
-                  <!-- Card Payment: visible, clearly marked Coming Soon, and never
-                       selectable. There is no live gateway at launch. -->
-                  <label class="pay-opt pay-opt--disabled" aria-disabled="true">
+                  ${
+                    cardEnabled
+                      ? `<label class="pay-opt">
+                    <input type="radio" name="payment" value="Card Payment" data-payment-card>
+                    <span class="pay-opt__body">
+                      <span class="pay-opt__title">${icon('card', 'icon icon--sm')} Card Payment</span>
+                      <span class="pay-opt__desc">Pay securely by debit or credit card. You'll be taken to our payment provider, Stripe, to complete payment.</span>
+                    </span>
+                  </label>`
+                      : `<label class="pay-opt pay-opt--disabled" aria-disabled="true">
                     <input type="radio" name="payment" value="Card Payment" disabled>
                     <span class="pay-opt__body">
                       <span class="pay-opt__title">${icon('card', 'icon icon--sm')} Card Payment
@@ -287,7 +303,8 @@ function checkout() {
                       </span>
                       <span class="pay-opt__desc">Card payments will be available soon.</span>
                     </span>
-                  </label>
+                  </label>`
+                  }
                 </div>
               </div>
 
@@ -349,6 +366,21 @@ function confirmation() {
             })}
           </div>
 
+          <!-- Card payment did not complete (e.g. cancelled at Stripe, or a
+               stale/tampered success link). Never shown for Cash on Delivery. -->
+          <div data-order-payment-failed hidden>
+            ${emptyState({
+              icon: 'alert',
+              title: 'Payment not completed',
+              body:
+                "We couldn't confirm your payment, so this order has not been placed and you have not been charged. You're welcome to try again.",
+              actions: [
+                { label: 'Return to Checkout', href: '/checkout/', primary: true },
+                { label: 'Contact Us', href: '/contact/' },
+              ],
+            })}
+          </div>
+
           <div class="confirm" data-order-view hidden>
             <div class="confirm__head">
               <span class="confirm__tick">${icon('checkCircle', 'icon icon--xl')}</span>
@@ -361,9 +393,13 @@ function confirmation() {
             </div>
 
             <div class="panel">
-              <div class="form-note">
+              <div class="form-note" data-note-cod hidden>
                 ${icon('whatsapp')}
                 <div>We'll contact you via WhatsApp or email within 24 hours to confirm your order.</div>
+              </div>
+              <div class="form-note" data-note-card hidden>
+                ${icon('checkCircle')}
+                <div>Your payment has been received — thank you! A receipt has been sent to your email by Stripe.</div>
               </div>
 
               <h2 class="panel__title mt-6">Order Summary</h2>
@@ -403,7 +439,7 @@ function confirmation() {
 
             <div class="panel mt-5">
               <h2 class="panel__title">What happens next</h2>
-              <ul class="features" style="border-bottom:0;padding-bottom:0">
+              <ul class="features" style="border-bottom:0;padding-bottom:0" data-next-cod hidden>
                 <li>${icon(
                   'phone',
                   'icon icon--sm'
@@ -418,6 +454,26 @@ function confirmation() {
                   'cash',
                   'icon icon--sm'
                 )}<span>Pay in cash to the delivery partner when your order arrives.</span></li>
+                <li>${icon(
+                  'refresh',
+                  'icon icon--sm'
+                )}<span>Changed your mind? Unused, unopened items can be returned within 7 days.</span></li>
+              </ul>
+              <ul class="features" style="border-bottom:0;padding-bottom:0" data-next-card hidden>
+                <li>${icon(
+                  'checkCircle',
+                  'icon icon--sm'
+                )}<span>Your order is confirmed and being prepared for dispatch.</span></li>
+                <li>${icon(
+                  'truck',
+                  'icon icon--sm'
+                )}<span>Your order will be delivered within ${esc(
+    site.deliveryDays
+  )}.</span></li>
+                <li>${icon(
+                  'mail',
+                  'icon icon--sm'
+                )}<span>A payment receipt has been emailed to you by Stripe.</span></li>
                 <li>${icon(
                   'refresh',
                   'icon icon--sm'

@@ -1,6 +1,12 @@
 ﻿# Build output — regenerate with `npm run build`
 dist/
 
+# Secrets — STRIPE_SECRET_KEY etc. live only in Vercel's project environment
+# variables (Settings -> Environment Variables), never in this repo.
+.env
+.env.*
+.vercel/
+
 # Dependencies (this project has none, but keep the guard)
 node_modules/
 

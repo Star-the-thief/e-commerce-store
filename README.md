@@ -115,10 +115,8 @@ will show a single-image gallery in the meantime, rather than pairing a real
 photo with a cartoon one. That's intentional: an honest partial gallery beats
 an inconsistent one (Spec 2).
 
-**Live card payment gateway.** Card Payment is deliberately visible-but-disabled
-at checkout. To activate it, see the marked block in
-[`src/pages/commerce.js`](src/pages/commerce.js) (search `pay-opt--disabled`) and
-remove the `disabled` attribute and "Coming Soon" tag once a gateway is live.
+**Live card payment gateway.** Integrated — see §10 below. It's off by default
+(Card Payment shows disabled/"Coming Soon") until a Stripe secret key is added.
 
 **Order tracking / backend.** See §6 below.
 
@@ -215,9 +213,9 @@ the code:
 
 Also deferred, by design:
 
-- **Card payment** — visible at checkout, marked "Coming Soon", disabled and not
-  selectable. Orders always record `Cash on Delivery`, which is hard-coded in
-  `checkout.js` and cannot be altered from the page.
+- **Card payment** — integrated (Stripe, see §10), but off until a secret key is
+  configured. Until then it shows exactly as originally spec'd: visible,
+  disabled, marked "Coming Soon", and every order records `Cash on Delivery`.
 - **Promo codes** — the input is present and tells the customer honestly that no
   codes are currently active. It never silently accepts an invalid code.
 - **Order tracking** — the Shipping policy and FAQ both state that the team
@@ -236,7 +234,7 @@ Change these in `src/data/site.json`; they are not duplicated anywhere.
 | Free delivery | Subtotal of AED 150.00 **or above** (150.00 exactly qualifies) |
 | Delivery scope | UAE only, 4–5 working days |
 | Returns | 7 days, unused and unopened items only |
-| Payment | Cash on Delivery live; Card Payment "Coming Soon" |
+| Payment | Cash on Delivery always live; Card Payment live once Stripe is configured (§10), "Coming Soon" until then |
 
 Price formatting flows through a single function in each layer — `money()` in
 `src/lib/layout.js` at build time and `HV.money()` at runtime — so no page can
@@ -277,3 +275,69 @@ support.
   field**, per Specification Section 1.
 - The Contact page shows a styled "Map available once our address is confirmed"
   block instead of a map pin, until a real address exists.
+
+---
+
+## 10. Card payments (Stripe)
+
+Card Payment at checkout is fully built and gated behind one environment
+variable. With it unset, the site behaves exactly as originally spec'd (Card
+disabled, "Coming Soon"). Set it, redeploy, and Card Payment goes live —
+nothing else to change.
+
+### How it works
+
+1. Customer selects Card Payment and submits the checkout form (same
+   validation as Cash on Delivery).
+2. The browser calls `/api/create-checkout-session` (a Vercel serverless
+   function), which **re-derives every price and the delivery fee from the
+   catalog itself** — nothing about cost is ever trusted from the browser —
+   and asks Stripe to create a Checkout Session.
+3. The browser is redirected to Stripe's own hosted payment page. Card
+   details are entered there, on Stripe's domain — this codebase never
+   receives, handles, or stores a card number, which is what keeps it out of
+   PCI-DSS scope.
+4. Stripe redirects back to `/order-confirmation/?session_id=...`. Before
+   showing anything, the confirmation page calls
+   `/api/verify-checkout-session`, which asks Stripe server-side whether that
+   session actually completed payment. Only on a confirmed `paid` status is
+   the order rendered and the cart cleared — a customer can't fabricate a
+   success screen by editing the URL.
+5. Order details (customer, delivery address, notes) travel as Checkout
+   Session metadata, since this is a static site with no database — Stripe
+   *is* the order record for a card payment, the same way `localStorage` is
+   the order record for Cash on Delivery.
+
+Relevant files: [`api/create-checkout-session.js`](api/create-checkout-session.js),
+[`api/verify-checkout-session.js`](api/verify-checkout-session.js),
+[`api/_stripe.js`](api/_stripe.js) (a ~50-line hand-rolled REST client — no
+`stripe` npm package, keeping the zero-dependency approach used everywhere
+else in this repo), and the `cardEnabled` / `CARD_ENABLED` checks in
+[`src/pages/commerce.js`](src/pages/commerce.js),
+[`src/pages/content.js`](src/pages/content.js) (FAQ),
+[`src/pages/policies.js`](src/pages/policies.js) (Terms & Conditions §5), and
+[`src/lib/layout.js`](src/lib/layout.js) (footer payment badge).
+
+### Turning it on
+
+1. In the Stripe Dashboard, get a **secret key** (`sk_test_...` for testing,
+   `sk_live_...` for real charges).
+2. In the Vercel project → **Settings → Environment Variables**, add
+   `STRIPE_SECRET_KEY` with that value. Never put it in this repo, in
+   `vercel.json`, or in chat — it's a live credential.
+3. Redeploy (env var changes need a new build to take effect, since the
+   enabled/disabled state is decided at build time).
+4. Test with [Stripe's test card numbers](https://stripe.com/docs/testing)
+   (e.g. `4242 4242 4242 4242`, any future expiry, any CVC) while using a
+   `sk_test_...` key — these never touch real money. Switch to `sk_live_...`
+   only once you've placed a full test order end to end.
+
+### Not yet included (reasonable next steps, not required to go live)
+
+- **Webhooks** — the confirmation page verifying the session on return covers
+  the normal flow. A Stripe webhook (`checkout.session.completed`) would add
+  resilience for the edge case of a customer closing the tab right after
+  paying but before the redirect completes. Not required to accept payments
+  correctly today.
+- **Refunds** — issued from the Stripe Dashboard directly for now; the Return
+  & Refund Policy already covers the process on the customer-facing side.
