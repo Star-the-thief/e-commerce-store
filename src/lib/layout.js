@@ -2,6 +2,7 @@
 
 const site = require('../data/site.json');
 const { icon } = require('./icons');
+const { brandImage } = require('./real-banners');
 
 /* ------------------------------------------------------------------ *
  * Shared helpers
@@ -351,7 +352,7 @@ function page(opts) {
     <meta property="og:title" content="${esc(title)}">
     <meta property="og:description" content="${esc(desc)}">
     <meta property="og:url" content="${esc(canonical)}">
-    <meta property="og:image" content="${esc(site.url)}/assets/img/brand/og-image.svg">
+    <meta property="og:image" content="${esc(site.url)}${brandImage('og-image', 1200, 630).src}">
     <meta name="twitter:card" content="summary_large_image">
 
     <link rel="icon" href="/favicon.ico" sizes="any">

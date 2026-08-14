@@ -26,6 +26,7 @@ const DIST = path.join(ROOT, 'dist');
 const catalog = require('./src/lib/products');
 const { productImage } = require('./src/lib/images');
 const { photosFor } = require('./src/lib/real-photos');
+const { photoFor: brandPhotoFor } = require('./src/lib/real-banners');
 const { banners } = require('./src/lib/banners');
 const site = require('./src/data/site.json');
 
@@ -140,9 +141,21 @@ function build() {
     }
   });
 
-  /* --- 4. Brand banners ------------------------------------------ */
-  Object.entries(banners).forEach(([name, svg]) => {
-    write(`assets/img/brand/${name}`, svg);
+  /* --- 4. Brand banners --------------------------------------------
+     Real photography (src/data/brand-photos/) wins per-key, same policy as
+     product imagery — copied as-is; every other key still gets its
+     generated SVG. */
+  let realBanners = 0;
+  let generatedBanners = 0;
+  Object.entries(banners).forEach(([key, svg]) => {
+    const real = brandPhotoFor(key);
+    if (real) {
+      copy(real.file, `assets/img/brand/${key}.${real.ext}`);
+      realBanners += 1;
+    } else {
+      write(`assets/img/brand/${key}.svg`, svg);
+      generatedBanners += 1;
+    }
   });
 
   /* --- 5. Pages (16 templates) ----------------------------------- */
@@ -236,7 +249,8 @@ function build() {
       `  ${catalog.products.length} products (${productsWithPhotos} with real photography, ${
         catalog.products.length - productsWithPhotos
       } placeholder)\n` +
-      `  ${realImages} real photos  ·  ${generatedImages} generated visuals\n` +
+      `  ${realImages} real product photos  ·  ${generatedImages} generated product visuals\n` +
+      `  ${realBanners} real banners  ·  ${generatedBanners} generated banners\n` +
       `  ${fileCount} files written to dist/`
   );
 }

@@ -6,11 +6,15 @@ const { site, esc, page, crumbs, ph, phoneLink, valueProps, newsletterBand } = r
 const { icon } = require('../lib/icons');
 const { productGrid, sectionHead } = require('../lib/components');
 const catalog = require('../lib/products');
+const { brandImage } = require('../lib/real-banners');
 
 /* ------------------------------------------------------------------ *
  * About Us — Spec 6.7
  * ------------------------------------------------------------------ */
 function about() {
+  const bannerImg = brandImage('banner-about', 1920, 620);
+  const storyImg = brandImage('tile-fashion', 1000, 800);
+
   const values = [
     ['shield', 'Quality', 'Thoughtfully selected products.'],
     ['tag', 'Affordability', 'Accessible pricing without compromise.'],
@@ -42,7 +46,7 @@ function about() {
   const body = `${crumbs([{ label: 'Home', href: '/' }, { label: 'About Us' }])}
 
       <section class="page-hero">
-        <img class="page-hero__img" src="/assets/img/brand/banner-about.svg" alt="" width="1920" height="620" loading="eager" decoding="async">
+        <img class="page-hero__img" src="${bannerImg.src}" alt="" width="${bannerImg.width}" height="${bannerImg.height}" loading="eager" decoding="async">
         <div class="container">
           <div class="page-hero__inner">
             <span class="eyebrow" style="color:var(--color-champagne)">About Hadaf Venture</span>
@@ -62,7 +66,7 @@ function about() {
               <blockquote class="story mt-6">"Hadaf Venture was founded to make everyday style and beauty effortless for women across the UAE. We curate fashion and cosmetics that are stylish, well-made, and genuinely affordable — from modest wear and everyday essentials to the beauty products that complete a look. Every piece in our collection is chosen with care, so shopping with us always feels personal, never generic."</blockquote>
             </div>
             <div class="split__media">
-              <img src="/assets/img/brand/tile-fashion.svg" alt="" width="1000" height="800" loading="lazy" decoding="async">
+              <img src="${storyImg.src}" alt="" width="${storyImg.width}" height="${storyImg.height}" loading="lazy" decoding="async">
             </div>
           </div>
         </div>

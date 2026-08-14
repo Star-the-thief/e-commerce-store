@@ -96,7 +96,7 @@ the key.
 
 ### The remaining Section 11 items
 
-**Real product photography.** In progress — 12 of 38 products (23 of the ~76
+**Real product photography.** In progress — 21 of 38 products (42 of the ~76
 minimum images) have real photography as of this build; the rest still show
 the generated placeholder visuals until more arrive.
 
@@ -114,6 +114,17 @@ with a generated one) — so a product with just 1 of its eventual 2–3 photos
 will show a single-image gallery in the meantime, rather than pairing a real
 photo with a cartoon one. That's intentional: an honest partial gallery beats
 an inconsistent one (Spec 2).
+
+**Brand banners (hero, About, and the 8 "Shop by Category" tiles).** The same
+swap-in mechanism, applied to `src/lib/banners.js`'s generated visuals. Drop a
+file into [`src/data/brand-photos/`](src/data/brand-photos/) named after the
+banner's logical key — `hero-home`, `banner-about`, `cat-dresses`,
+`cat-coords`, `cat-abayas`, `cat-tops`, `cat-makeup`, `cat-skincare`,
+`cat-fragrance`, `cat-haircare`, `tile-fashion`, `tile-beauty`, `banner-shop`,
+or `og-image` — and `npm run build` picks it up via `src/lib/real-banners.js`,
+same as products. 10 of 14 banner slots have real photography as of this
+build; `tile-fashion`, `tile-beauty`, `banner-shop` and `og-image` are still
+generated.
 
 **Live card payment gateway.** Integrated — see §10 below. It's off by default
 (Card Payment shows disabled/"Coming Soon") until a Stripe secret key is added.

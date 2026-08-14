@@ -271,21 +271,24 @@ ${bannerDefs(w, h)}
 `;
 }
 
+// Keys are logical names, no extension — src/lib/real-banners.js matches
+// these against src/data/brand-photos/{key}.{jpg,png,webp} and build.js falls
+// back to generating the SVG below only when no real photo exists for a key.
 module.exports = {
   banners: {
-    'hero-home.svg': heroBanner(),
-    'tile-fashion.svg': splitTile('fashion'),
-    'tile-beauty.svg': splitTile('beauty'),
-    'banner-about.svg': wideBanner(1920, 620),
-    'banner-shop.svg': wideBanner(1920, 480),
-    'og-image.svg': shareCard(),
-    'cat-dresses.svg': tile('dresses'),
-    'cat-coords.svg': tile('coords'),
-    'cat-abayas.svg': tile('abayas'),
-    'cat-tops.svg': tile('tops'),
-    'cat-makeup.svg': tile('makeup'),
-    'cat-skincare.svg': tile('skincare'),
-    'cat-fragrance.svg': tile('fragrance'),
-    'cat-haircare.svg': tile('haircare'),
+    'hero-home': heroBanner(),
+    'tile-fashion': splitTile('fashion'),
+    'tile-beauty': splitTile('beauty'),
+    'banner-about': wideBanner(1920, 620),
+    'banner-shop': wideBanner(1920, 480),
+    'og-image': shareCard(),
+    'cat-dresses': tile('dresses'),
+    'cat-coords': tile('coords'),
+    'cat-abayas': tile('abayas'),
+    'cat-tops': tile('tops'),
+    'cat-makeup': tile('makeup'),
+    'cat-skincare': tile('skincare'),
+    'cat-fragrance': tile('fragrance'),
+    'cat-haircare': tile('haircare'),
   },
 };

@@ -11,6 +11,15 @@ const { esc, page, crumbs, valueProps } = require('../lib/layout');
 const { icon } = require('../lib/icons');
 const { productGrid } = require('../lib/components');
 const catalog = require('../lib/products');
+const { brandImage } = require('../lib/real-banners');
+
+// Canonical fallback size for each banner key, used only until a real photo
+// exists (see src/lib/real-banners.js) — display is always object-fit:cover.
+const BANNER_FALLBACK = {
+  'banner-shop': [1920, 480],
+  'tile-fashion': [1000, 800],
+  'tile-beauty': [1000, 800],
+};
 
 const VIEWS = {
   all: {
@@ -25,7 +34,7 @@ const VIEWS = {
     metaDesc:
       'Browse the full Hadaf Venture collection of women’s fashion and beauty products. UAE-wide delivery, Cash on Delivery, 7-day returns.',
     trail: [{ label: 'Home', href: '/' }, { label: 'Shop' }],
-    banner: 'banner-shop.svg',
+    banner: 'banner-shop',
   },
   fashion: {
     category: 'Fashion',
@@ -39,7 +48,7 @@ const VIEWS = {
     metaDesc:
       'Shop women’s dresses, tops, co-ord sets, abayas and modest wear at Hadaf Venture. Delivered across the UAE with Cash on Delivery.',
     trail: [{ label: 'Home', href: '/' }, { label: 'Shop', href: '/shop/' }, { label: 'Fashion' }],
-    banner: 'tile-fashion.svg',
+    banner: 'tile-fashion',
   },
   beauty: {
     category: 'Beauty',
@@ -53,7 +62,7 @@ const VIEWS = {
     metaDesc:
       'Shop makeup, skincare, fragrances and body care at Hadaf Venture. Genuine products delivered across the UAE with Cash on Delivery.',
     trail: [{ label: 'Home', href: '/' }, { label: 'Shop', href: '/shop/' }, { label: 'Beauty' }],
-    banner: 'tile-beauty.svg',
+    banner: 'tile-beauty',
   },
 };
 
@@ -90,11 +99,13 @@ function build(key) {
   const view = VIEWS[key];
   const items = catalog.inCategory(view.category);
   const { min, max } = catalog.priceBounds;
+  const [fw, fh] = BANNER_FALLBACK[view.banner];
+  const bannerImg = brandImage(view.banner, fw, fh);
 
   const body = `${crumbs(view.trail)}
 
       <section class="page-hero">
-        <img class="page-hero__img" src="/assets/img/brand/${view.banner}" alt="" width="1920" height="480" loading="eager" decoding="async">
+        <img class="page-hero__img" src="${bannerImg.src}" alt="" width="${bannerImg.width}" height="${bannerImg.height}" loading="eager" decoding="async">
         <div class="container">
           <div class="page-hero__inner">
             <span class="eyebrow" style="color:var(--color-champagne)">${esc(view.eyebrow)}</span>

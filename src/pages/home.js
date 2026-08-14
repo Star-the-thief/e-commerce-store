@@ -6,41 +6,43 @@ const { site, esc, page, valueProps, newsletterBand } = require('../lib/layout')
 const { icon } = require('../lib/icons');
 const { productRail, productGrid, sectionHead } = require('../lib/components');
 const catalog = require('../lib/products');
+const { brandImage } = require('../lib/real-banners');
 
 const SUB_TILES = [
   {
     group: "Women's Fashion",
     items: [
-      { label: 'Dresses', sub: 'Dresses', img: 'cat-dresses.svg', href: '/shop/fashion/?sub=Dresses' },
-      { label: 'Co-ords', sub: 'Co-ord Sets', img: 'cat-coords.svg', href: '/shop/fashion/?sub=Co-ord+Sets' },
+      { label: 'Dresses', sub: 'Dresses', img: 'cat-dresses', href: '/shop/fashion/?sub=Dresses' },
+      { label: 'Co-ords', sub: 'Co-ord Sets', img: 'cat-coords', href: '/shop/fashion/?sub=Co-ord+Sets' },
       {
         label: 'Abayas',
         sub: 'Abayas & Modest Wear',
-        img: 'cat-abayas.svg',
+        img: 'cat-abayas',
         href: '/shop/fashion/?sub=Abayas+%26+Modest+Wear',
       },
-      { label: 'Tops', sub: 'Tops & Blouses', img: 'cat-tops.svg', href: '/shop/fashion/?sub=Tops+%26+Blouses' },
+      { label: 'Tops', sub: 'Tops & Blouses', img: 'cat-tops', href: '/shop/fashion/?sub=Tops+%26+Blouses' },
     ],
   },
   {
     group: 'Beauty',
     items: [
-      { label: 'Makeup', sub: 'Makeup', img: 'cat-makeup.svg', href: '/shop/beauty/?sub=Makeup' },
-      { label: 'Skincare', sub: 'Skincare', img: 'cat-skincare.svg', href: '/shop/beauty/?sub=Skincare' },
-      { label: 'Fragrance', sub: 'Fragrances', img: 'cat-fragrance.svg', href: '/shop/beauty/?sub=Fragrances' },
-      { label: 'Haircare', sub: 'Haircare', img: 'cat-haircare.svg', href: '/shop/beauty/?sub=Haircare' },
+      { label: 'Makeup', sub: 'Makeup', img: 'cat-makeup', href: '/shop/beauty/?sub=Makeup' },
+      { label: 'Skincare', sub: 'Skincare', img: 'cat-skincare', href: '/shop/beauty/?sub=Skincare' },
+      { label: 'Fragrance', sub: 'Fragrances', img: 'cat-fragrance', href: '/shop/beauty/?sub=Fragrances' },
+      { label: 'Haircare', sub: 'Haircare', img: 'cat-haircare', href: '/shop/beauty/?sub=Haircare' },
     ],
   },
 ];
 
 function catGroup(group) {
   const cards = group.items
-    .map(
-      (t) => `<a class="cat-card" href="${t.href}">
-              <img src="/assets/img/brand/${t.img}" alt="" width="600" height="800" loading="lazy" decoding="async">
+    .map((t) => {
+      const img = brandImage(t.img, 600, 800);
+      return `<a class="cat-card" href="${t.href}">
+              <img src="${img.src}" alt="" width="${img.width}" height="${img.height}" loading="lazy" decoding="async">
               <span class="cat-card__label">${esc(t.label)} ${icon('arrowRight', 'icon icon--sm')}</span>
-            </a>`
-    )
+            </a>`;
+    })
     .join('\n            ');
 
   return `<div class="cat-group">
@@ -52,6 +54,11 @@ function catGroup(group) {
 }
 
 function build() {
+  const heroImg = brandImage('hero-home', 1920, 900);
+  const tileFashionImg = brandImage('tile-fashion', 1000, 800);
+  const tileBeautyImg = brandImage('tile-beauty', 1000, 800);
+  const aboutBannerImg = brandImage('banner-about', 1920, 620);
+
   const jsonLd = [
     {
       '@context': 'https://schema.org',
@@ -82,7 +89,7 @@ function build() {
 
   const body = `      <!-- 3. Hero banner -->
       <section class="hero">
-        <img class="hero__bg" src="/assets/img/brand/hero-home.svg" alt="" width="1920" height="900" fetchpriority="high" decoding="async">
+        <img class="hero__bg" src="${heroImg.src}" alt="" width="${heroImg.width}" height="${heroImg.height}" fetchpriority="high" decoding="async">
         <div class="container">
           <div class="hero__inner">
             <span class="eyebrow" style="color:var(--color-champagne)">Fashion &amp; Beauty · Dubai, UAE</span>
@@ -117,7 +124,7 @@ function build() {
         <div class="container">
           <div class="split-tiles">
             <a class="split-tile" href="/shop/fashion/">
-              <img src="/assets/img/brand/tile-fashion.svg" alt="" width="1000" height="800" loading="lazy" decoding="async">
+              <img src="${tileFashionImg.src}" alt="" width="${tileFashionImg.width}" height="${tileFashionImg.height}" loading="lazy" decoding="async">
               <div class="split-tile__body">
                 <span class="eyebrow" style="color:var(--color-champagne)">21 pieces</span>
                 <h3>Shop Fashion</h3>
@@ -126,7 +133,7 @@ function build() {
               </div>
             </a>
             <a class="split-tile" href="/shop/beauty/">
-              <img src="/assets/img/brand/tile-beauty.svg" alt="" width="1000" height="800" loading="lazy" decoding="async">
+              <img src="${tileBeautyImg.src}" alt="" width="${tileBeautyImg.width}" height="${tileBeautyImg.height}" loading="lazy" decoding="async">
               <div class="split-tile__body">
                 <span class="eyebrow" style="color:var(--color-champagne)">17 products</span>
                 <h3>Shop Beauty</h3>
@@ -165,7 +172,7 @@ function build() {
         <div class="container">
           <div class="split split--media-right">
             <div class="split__media">
-              <img src="/assets/img/brand/banner-about.svg" alt="" width="1920" height="620" loading="lazy" decoding="async">
+              <img src="${aboutBannerImg.src}" alt="" width="${aboutBannerImg.width}" height="${aboutBannerImg.height}" loading="lazy" decoding="async">
             </div>
             <div class="split__body">
               <span class="eyebrow">Our story</span>
