@@ -107,7 +107,7 @@ function build(p) {
         priceCurrency: 'AED',
         price: p.price.toFixed(2),
         availability: 'https://schema.org/InStock',
-        seller: { '@type': 'Organization', name: site.name },
+        seller: { '@type': 'Organization', name: site.name, legalName: site.legalName },
       },
     },
     {

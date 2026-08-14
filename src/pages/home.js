@@ -64,6 +64,7 @@ function build() {
       '@context': 'https://schema.org',
       '@type': 'Organization',
       name: site.name,
+      legalName: site.legalName,
       url: site.url,
       logo: `${site.url}/assets/img/brand/logo-horizontal.svg`,
       email: site.email,

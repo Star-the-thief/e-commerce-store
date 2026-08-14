@@ -2,8 +2,8 @@
   "_comment": "SINGLE SOURCE OF TRUTH for business details and the Section 11 placeholder items. Update the values here and re-run `npm run build` — every page picks the change up automatically.",
 
   "name": "Hadaf Venture",
-  "_legalName_comment": "Full registered name, used only in the footer copyright line — the brand name above stays 'Hadaf Venture' everywhere else (header, nav, page titles, meta tags).",
-  "legalName": "Hadaf Venture For Clothing Line",
+  "_legalName_comment": "Full registered entity name — used in the footer copyright line, the legal-document letterhead/sign-off blocks, the Terms & Conditions and Privacy Policy self-identification sentences, and structured data (schema.org legalName). The brand name above stays 'Hadaf Venture' everywhere else (header, nav, page titles, meta tags, and throughout the body of the legal documents once each one defines the short form).",
+  "legalName": "Hadaf Venture For Clothing Line LLC",
   "domain": "hadafventureforclothing.com",
   "url": "https://hadafventureforclothing.com",
   "tagline": "Everyday Style, Effortless Beauty.",

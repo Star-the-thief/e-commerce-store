@@ -31,7 +31,7 @@ const POLICY_PAGES = [
 function contactBlock(heading, lead) {
   return `<h2>${heading}</h2>
             ${lead ? `<p>${esc(lead)}</p>\n            ` : ''}<address>
-              ${esc(site.name)}<br>
+              ${esc(site.legalName)}<br>
               Email: <a href="mailto:${esc(site.email)}">${esc(site.email)}</a><br>
               Phone/WhatsApp: ${phoneLink('light')}<br>
               ${ph(site.address, 'light')}, ${esc(site.addressCity)}
@@ -138,7 +138,9 @@ function shipping() {
  * 9.1 Return & Refund Policy — VERBATIM
  * ================================================================== */
 function returns() {
-  const content = `              <p>At Hadaf Venture, we want you to be satisfied with your purchase. If you need to return an eligible item, please review the following policy.</p>
+  const content = `              <p>At ${esc(
+                site.legalName
+              )} ("Hadaf Venture"), we want you to be satisfied with your purchase. If you need to return an eligible item, please review the following policy.</p>
 
               <h2>1. Return Period</h2>
               <p>Customers may request a return within 7 days of receiving their order. To be eligible for a return, the item must be:</p>
@@ -209,7 +211,9 @@ function returns() {
  * 9.2 Privacy Policy — VERBATIM
  * ================================================================== */
 function privacy() {
-  const content = `              <p>Hadaf Venture ("we," "us," "our") respects your privacy and is committed to protecting the personal data you share with us when you visit or shop on hadafventureforclothing.com (the "Website"). This Privacy Policy explains what information we collect, how we use it, and your rights in relation to it.</p>
+  const content = `              <p>${esc(
+                site.legalName
+              )} ("Hadaf Venture," "we," "us," "our") respects your privacy and is committed to protecting the personal data you share with us when you visit or shop on hadafventureforclothing.com (the "Website"). This Privacy Policy explains what information we collect, how we use it, and your rights in relation to it.</p>
 
               <h2>1. Information We Collect</h2>
               <ul>
@@ -278,7 +282,9 @@ function terms() {
   const content = `              <p>These Terms &amp; Conditions ("Terms") govern your use of hadafventureforclothing.com (the "Website") and any purchase made through it. By using the Website or placing an order, you agree to these Terms.</p>
 
               <h2>1. About Us</h2>
-              <p>Hadaf Venture is an online fashion and beauty retailer based in Dubai, United Arab Emirates. Trade License No.: ${ph(
+              <p>${esc(
+                site.legalName
+              )} ("Hadaf Venture") is an online fashion and beauty retailer based in Dubai, United Arab Emirates. Trade License No.: ${ph(
                 site.tradeLicense,
                 'light'
               )}.</p>
