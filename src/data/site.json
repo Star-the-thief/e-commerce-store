@@ -43,10 +43,10 @@
 
   "_partners_comment": "Confirmed wholesale/distribution partners shown in the logo showcase on the Homepage, About Us and Partner With Hadaf pages. Only list a company here once the partnership is genuine and confirmed. Drop each company's official logo file into src/data/partner-logos/ named `{id}.svg` (or .png/.webp/.jpg) — see src/lib/real-logos.js. Until a file is provided, the name renders as a clean text wordmark rather than a placeholder mark.",
   "partners": [
-    { "id": "rb-fashion", "name": "R&B Fashion" },
+    { "id": "affordables", "name": "Affordables" },
     { "id": "splash", "name": "Splash" },
     { "id": "palm", "name": "Palm" },
-    { "id": "wear-mart", "name": "Wear Mart" }
+    { "id": "brand-bazzaar", "name": "Brand Bazzaar" }
   ],
 
   "announcement": "Now accepting wholesale enquiries — UAE & GCC delivery",
