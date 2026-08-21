@@ -1,7 +1,8 @@
 'use strict';
 
-const { esc, money } = require('./layout');
+const { esc, money, site } = require('./layout');
 const { icon } = require('./icons');
+const { logoFor } = require('./real-logos');
 
 /**
  * ONE product card, used by the homepage rails, the catalogue grid and the
@@ -93,4 +94,36 @@ function emptyState(cfg) {
         </div>`;
 }
 
-module.exports = { productCard, productRail, productGrid, sectionHead, emptyState };
+/**
+ * Partner logo showcase — Home, About Us and Partner With Hadaf. Renders the
+ * confirmed `site.partners` list (only ever add a company there once the
+ * partnership is genuine and its branding is cleared for use). A partner
+ * shows its real logo file once one is dropped into
+ * src/data/partner-logos/ (see src/lib/real-logos.js) — until then it
+ * renders as a clean text wordmark, never a placeholder image.
+ */
+function partnerLogos(opts) {
+  const o = opts || {};
+  if (!site.partners || !site.partners.length) return '';
+
+  const items = site.partners
+    .map((p) => {
+      const real = logoFor(p.id);
+      const mark = real
+        ? `<img src="${real.url}" alt="${esc(p.name)}" loading="lazy" decoding="async">`
+        : `<span class="partner-logo__word">${esc(p.name)}</span>`;
+      return `<li class="partner-logo">${mark}</li>`;
+    })
+    .join('\n            ');
+
+  return `<section class="section partner-strip${o.surface ? ' section--surface' : ''}">
+      <div class="container">
+        <p class="partner-strip__eyebrow">${esc(o.label || 'Trusted by leading UAE retailers')}</p>
+        <ul class="partner-logo__list">
+            ${items}
+        </ul>
+      </div>
+    </section>`;
+}
+
+module.exports = { productCard, productRail, productGrid, sectionHead, emptyState, partnerLogos };

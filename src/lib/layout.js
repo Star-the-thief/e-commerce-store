@@ -54,6 +54,7 @@ const NAV = [
   { label: 'Home', href: '/' },
   { label: 'Catalogue', href: '/catalogue/' },
   { label: 'Wholesale Process', href: '/wholesale-process/' },
+  { label: 'Partner With Us', href: '/partner/' },
   { label: 'About Us', href: '/about/' },
   { label: 'Contact Us', href: '/contact/' },
 ];
@@ -175,6 +176,7 @@ function footer() {
     `<ul class="footer__links">
               <li><a href="/about/">About Us</a></li>
               <li><a href="/catalogue/">Catalogue</a></li>
+              <li><a href="/partner/">Partner With Us</a></li>
               <li><a href="/contact/">Contact Us</a></li>
             </ul>`
   );

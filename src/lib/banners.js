@@ -234,6 +234,7 @@ module.exports = {
     'banner-about': wideBanner(1920, 620),
     'banner-catalogue': wideBanner(1920, 480),
     'banner-wholesale-process': wideBanner(1920, 480),
+    'banner-partner': wideBanner(1920, 480),
     'og-image': shareCard(),
     'cat-dresses': tile('dresses'),
     'cat-coords': tile('coords'),

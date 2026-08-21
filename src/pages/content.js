@@ -4,7 +4,7 @@
 
 const { site, esc, page, crumbs, ph, phoneLink, valueProps, newsletterBand } = require('../lib/layout');
 const { icon } = require('../lib/icons');
-const { productGrid, sectionHead } = require('../lib/components');
+const { productGrid, sectionHead, partnerLogos } = require('../lib/components');
 const catalog = require('../lib/products');
 const { brandImage } = require('../lib/real-banners');
 
@@ -110,6 +110,8 @@ function about() {
           </div>
         </div>
       </section>
+
+      ${partnerLogos({ surface: true })}
 
 ${newsletterBand()}`;
 

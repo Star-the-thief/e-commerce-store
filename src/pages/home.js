@@ -4,7 +4,7 @@
 
 const { site, esc, page, valueProps, newsletterBand } = require('../lib/layout');
 const { icon } = require('../lib/icons');
-const { productRail, productGrid, sectionHead } = require('../lib/components');
+const { productRail, productGrid, sectionHead, partnerLogos } = require('../lib/components');
 const catalog = require('../lib/products');
 const { brandImage } = require('../lib/real-banners');
 
@@ -101,6 +101,9 @@ function build() {
           </div>
         </div>
       </section>
+
+      <!-- Partner logo showcase -->
+      ${partnerLogos()}
 
       <!-- Browse by category -->
       <section class="section">

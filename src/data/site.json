@@ -41,6 +41,14 @@
     "product": "Hi Hadaf Venture Trading, I'm interested in wholesale pricing and MOQ for \"{name}\" (SKU: {sku}). Could you share more details?"
   },
 
+  "_partners_comment": "Confirmed wholesale/distribution partners shown in the logo showcase on the Homepage, About Us and Partner With Hadaf pages. Only list a company here once the partnership is genuine and confirmed. Drop each company's official logo file into src/data/partner-logos/ named `{id}.svg` (or .png/.webp/.jpg) — see src/lib/real-logos.js. Until a file is provided, the name renders as a clean text wordmark rather than a placeholder mark.",
+  "partners": [
+    { "id": "rb-fashion", "name": "R&B Fashion" },
+    { "id": "splash", "name": "Splash" },
+    { "id": "palm", "name": "Palm" },
+    { "id": "wear-mart", "name": "Wear Mart" }
+  ],
+
   "announcement": "Now accepting wholesale enquiries — UAE & GCC delivery",
   "legalUpdated": "21 August 2026",
   "copyrightYear": "2025",

@@ -27,6 +27,7 @@ const catalog = require('./src/lib/products');
 const { productImage } = require('./src/lib/images');
 const { photosFor } = require('./src/lib/real-photos');
 const { photoFor: brandPhotoFor } = require('./src/lib/real-banners');
+const { logoFor: partnerLogoFor } = require('./src/lib/real-logos');
 const { banners } = require('./src/lib/banners');
 const site = require('./src/data/site.json');
 
@@ -35,6 +36,7 @@ const catalogue = require('./src/pages/catalogue');
 const product = require('./src/pages/product');
 const enquiry = require('./src/pages/enquiry');
 const wholesaleProcess = require('./src/pages/wholesale-process');
+const partner = require('./src/pages/partner');
 const content = require('./src/pages/content');
 const policies = require('./src/pages/policies');
 
@@ -151,6 +153,19 @@ function build() {
     }
   });
 
+  /* --- 4b. Partner logos ------------------------------------------
+     Real logo files only (src/data/partner-logos/) — a partner with no file
+     yet renders as a text wordmark in the showcase, never a placeholder
+     image, so there is nothing to write when one is missing. */
+  let realLogos = 0;
+  (site.partners || []).forEach((p) => {
+    const real = partnerLogoFor(p.id);
+    if (real) {
+      copy(real.file, `assets/img/partners/${p.id}.${real.ext}`);
+      realLogos += 1;
+    }
+  });
+
   /* --- 5. Pages ---------------------------------------------------- */
   write('index.html', home.build()); //                              Homepage
   write('catalogue/index.html', catalogue.build()); //                Wholesale Catalogue
@@ -162,6 +177,7 @@ function build() {
 
   write('enquiry/index.html', enquiry.build()); //                    Wholesale Enquiry
   write('wholesale-process/index.html', wholesaleProcess.build()); // Wholesale Process
+  write('partner/index.html', partner.build()); //                    Partner With Hadaf
   write('about/index.html', content.about()); //                     About Us
   write('contact/index.html', content.contact()); //                 Contact Us
   write('faq/index.html', content.faq()); //                         FAQ
@@ -180,6 +196,7 @@ function build() {
     '/catalogue/',
     '/enquiry/',
     '/wholesale-process/',
+    '/partner/',
     '/about/',
     '/contact/',
     '/faq/',
@@ -251,12 +268,15 @@ function build() {
   const productsWithPhotos = catalog.products.filter((p) => p.hasRealPhotos).length;
   console.log(
     `Hadaf Venture Trading — build complete in ${ms}ms\n` +
-      `  11 page templates  ·  ${catalog.products.length + 11} HTML files\n` +
+      `  12 page templates  ·  ${catalog.products.length + 12} HTML files\n` +
       `  ${catalog.products.length} products (${productsWithPhotos} with real photography, ${
         catalog.products.length - productsWithPhotos
       } placeholder)\n` +
       `  ${realImages} real product photos  ·  ${generatedImages} generated product visuals\n` +
       `  ${realBanners} real banners  ·  ${generatedBanners} generated banners\n` +
+      `  ${(site.partners || []).length} partners (${realLogos} with a real logo file, ${
+        (site.partners || []).length - realLogos
+      } text wordmark)\n` +
       `  ${fileCount} files written to dist/`
   );
 }
