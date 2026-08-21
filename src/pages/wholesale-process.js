@@ -108,7 +108,7 @@ function build() {
 
       <section class="section">
         <div class="container">
-          ${sectionHead('Logistics', 'Delivery &amp; Lead Times', null, { center: true })}
+          ${sectionHead('Logistics', 'Delivery & Lead Times', null, { center: true })}
           <div class="props props--3">
             <div class="prop">
               <span class="prop__icon">${icon('truck', 'icon icon--lg')}</span>
