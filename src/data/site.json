@@ -3,7 +3,7 @@
 
   "name": "Hadaf Venture",
   "_legalName_comment": "Full registered entity name — used in the footer copyright line, the legal-document letterhead/sign-off blocks, the Terms & Conditions and Privacy Policy self-identification sentences, and structured data (schema.org legalName). The brand name above stays 'Hadaf Venture' everywhere else (header, nav, page titles, meta tags, and throughout the body of the legal documents once each one defines the short form).",
-  "legalName": "Hadaf Venture For Clothing Line LLC",
+  "legalName": "Hadaf Venture Trading LLC",
   "domain": "hadafventureforclothing.com",
   "url": "https://hadafventureforclothing.com",
   "tagline": "Everyday Style, Effortless Beauty.",
@@ -13,7 +13,7 @@
   "_placeholders_comment": "Section 11 — intentionally visible bracketed placeholders. Replace the string with the real value when the client provides it; do NOT delete the key.",
   "phone": "+971 54 477 5584",
   "phoneIntl": "971544775584",
-  "address": "Office #503-A, Bu Haleeba Plaza, Al Muraqqabat",
+  "address": "Office# C-1801, Ontario Tower, Business Bay",
   "addressCity": "Dubai, United Arab Emirates",
   "tradeLicense": "1545509",
   "businessHours": "Mon–Fri, 9am–6pm",
