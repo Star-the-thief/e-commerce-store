@@ -2,12 +2,12 @@
   "_comment": "SINGLE SOURCE OF TRUTH for business details and the Section 11 placeholder items. Update the values here and re-run `npm run build` — every page picks the change up automatically.",
 
   "name": "Hadaf Venture",
-  "_legalName_comment": "Full registered entity name — used in the footer copyright line, the legal-document letterhead/sign-off blocks, the Terms & Conditions and Privacy Policy self-identification sentences, and structured data (schema.org legalName). The brand name above stays 'Hadaf Venture' everywhere else (header, nav, page titles, meta tags, and throughout the body of the legal documents once each one defines the short form).",
+  "_legalName_comment": "Full registered entity name — used in the footer copyright line, the legal-document letterhead/sign-off blocks, the Trade Terms and Privacy Policy self-identification sentences, and structured data (schema.org legalName). The brand name above stays 'Hadaf Venture' everywhere else (header, nav, page titles, meta tags, and throughout the body of the legal documents once each one defines the short form).",
   "legalName": "Hadaf Venture Trading LLC",
   "domain": "hadafventureforclothing.com",
   "url": "https://hadafventureforclothing.com",
-  "tagline": "Everyday Style, Effortless Beauty.",
-  "description": "Online fashion and beauty store offering stylish, affordable garments and quality cosmetic essentials for women in the UAE.",
+  "tagline": "Wholesale Garment Supplier in the UAE",
+  "description": "Hadaf Venture Trading LLC supplies quality women's garments in bulk to retailers, distributors and boutiques across the UAE and GCC.",
   "email": "info@hadafventureforclothing.com",
 
   "_placeholders_comment": "Section 11 — intentionally visible bracketed placeholders. Replace the string with the real value when the client provides it; do NOT delete the key.",
@@ -18,7 +18,7 @@
   "tradeLicense": "1545509",
   "businessHours": "Mon–Fri, 9am–6pm",
 
-  "_social_comment": "Section 11 — social handles pending. Leave href as '#' until handles are provided. WhatsApp is wired to the real number above.",
+  "_social_comment": "Social handles pending. Leave href as '#' until handles are provided. WhatsApp is wired to the real number above.",
   "social": [
     { "label": "Instagram", "href": "#" },
     { "label": "Facebook", "href": "#" },
@@ -26,13 +26,23 @@
     { "label": "WhatsApp", "href": "https://wa.me/971544775584" }
   ],
 
-  "currency": "AED",
-  "deliveryFee": 15.0,
-  "freeDeliveryThreshold": 150.0,
-  "deliveryDays": "4–5 working days",
-  "returnWindowDays": 7,
-  "announcement": "Now shipping across the UAE",
-  "legalUpdated": "14 August 2026",
+  "_wholesale_comment": "Site-wide wholesale policy shown on every product page and the Wholesale Process page. These are sensible starting defaults, not fabricated per-product data — update them here once real MOQ, packaging and lead-time policy is confirmed, and every page picks it up automatically.",
+  "wholesale": {
+    "moq": "50 pieces per style (mixed sizes and colours accepted)",
+    "packaging": "Standard export packaging — polybagged with barcode label, packed in bulk cartons",
+    "leadTime": "Typically 2–4 weeks for bulk orders, depending on quantity and stock availability",
+    "supplyRegion": "UAE-wide, with GCC export available on request",
+    "quoteValidity": "7 days from the date of issue",
+    "sampleNote": "Sample units may be available on request prior to bulk confirmation"
+  },
+
+  "whatsappTemplates": {
+    "general": "Hi Hadaf Venture Trading, I'd like to enquire about wholesale garment supply.",
+    "product": "Hi Hadaf Venture Trading, I'm interested in wholesale pricing and MOQ for \"{name}\" (SKU: {sku}). Could you share more details?"
+  },
+
+  "announcement": "Now accepting wholesale enquiries — UAE & GCC delivery",
+  "legalUpdated": "21 August 2026",
   "copyrightYear": "2025",
 
   "emirates": [

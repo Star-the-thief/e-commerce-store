@@ -99,38 +99,21 @@ ${bannerDefs(w, h)}
 /* ------------------------------------------------------------------ *
  * Category hero tiles — 1000 x 800
  * ------------------------------------------------------------------ */
-function splitTile(kind) {
+function splitTile() {
   const w = 1000;
   const h = 800;
-  const fashion = kind === 'fashion';
 
-  const motif = fashion
-    ? // hanging garment forms
-      `<g opacity="0.85">
+  // Hanging garment forms — the site is garments-only.
+  const motif = `<g opacity="0.85">
       <path d="M300 150 C258 150 232 168 232 168 L180 200 C168 208 166 222 174 234 L214 300 L200 700 C199 716 212 730 228 730 L372 730 C388 730 401 716 400 700 L386 300 L426 234 C434 222 432 208 420 200 L368 168 C368 168 342 150 300 150 Z" fill="${IVORY}" opacity="0.14"/>
       <path d="M300 150 C258 150 232 168 232 168 L180 200 C168 208 166 222 174 234 L214 300 L200 700 C199 716 212 730 228 730 L372 730 C388 730 401 716 400 700 L386 300 L426 234 C434 222 432 208 420 200 L368 168 C368 168 342 150 300 150 Z" fill="none" stroke="${CHAMPAGNE}" stroke-width="2.5" opacity="0.6"/>
       <path d="M640 190 C606 190 584 204 584 204 L540 232 C530 239 528 250 535 260 L568 316 L552 700 C551 716 564 730 580 730 L700 730 C716 730 729 716 728 700 L712 316 L745 260 C752 250 750 239 740 232 L696 204 C696 204 674 190 640 190 Z" fill="${CHAMPAGNE}" opacity="0.12"/>
       <path d="M640 190 C606 190 584 204 584 204 L540 232 C530 239 528 250 535 260 L568 316 L552 700 C551 716 564 730 580 730 L700 730 C716 730 729 716 728 700 L712 316 L745 260 C752 250 750 239 740 232 L696 204 C696 204 674 190 640 190 Z" fill="none" stroke="${CHAMPAGNE}" stroke-width="2" opacity="0.45"/>
       <path d="M232 168 C258 194 276 204 300 204 C324 204 342 194 368 168" fill="none" stroke="${CHAMPAGNE}" stroke-width="2" opacity="0.5"/>
       <path d="M584 204 C606 226 622 234 640 234 C658 234 674 226 696 204" fill="none" stroke="${CHAMPAGNE}" stroke-width="2" opacity="0.4"/>
-    </g>`
-    : // cosmetic vessel forms
-      `<g opacity="0.9">
-      <path d="M250 380 C250 358 268 340 290 340 L410 340 C432 340 450 358 450 380 L450 690 C450 712 432 730 410 730 L290 730 C268 730 250 712 250 690 Z" fill="${IVORY}" opacity="0.14"/>
-      <path d="M250 380 C250 358 268 340 290 340 L410 340 C432 340 450 358 450 380 L450 690 C450 712 432 730 410 730 L290 730 C268 730 250 712 250 690 Z" fill="none" stroke="${CHAMPAGNE}" stroke-width="2.5" opacity="0.6"/>
-      <rect x="316" y="252" width="68" height="92" rx="10" fill="${CHAMPAGNE}" opacity="0.4"/>
-      <circle cx="350" cy="520" r="62" fill="none" stroke="${CHAMPAGNE}" stroke-width="2.5" opacity="0.7"/>
-      <path d="M350 486 L360 510 L384 520 L360 530 L350 554 L340 530 L316 520 L340 510 Z" fill="${CHAMPAGNE}" opacity="0.75"/>
-
-      <path d="M540 500 C540 480 556 464 576 464 L724 464 C744 464 760 480 760 500 L760 692 C760 713 743 730 722 730 L578 730 C557 730 540 713 540 692 Z" fill="${CHAMPAGNE}" opacity="0.12"/>
-      <path d="M540 500 C540 480 556 464 576 464 L724 464 C744 464 760 480 760 500 L760 692 C760 713 743 730 722 730 L578 730 C557 730 540 713 540 692 Z" fill="none" stroke="${CHAMPAGNE}" stroke-width="2" opacity="0.45"/>
-      <rect x="566" y="404" width="168" height="62" rx="10" fill="${IVORY}" opacity="0.12"/>
-      <path d="M566 560 L734 560 M596 604 L704 604" stroke="${CHAMPAGNE}" stroke-width="3" opacity="0.4" fill="none"/>
     </g>`;
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${
-    fashion ? 'Women’s fashion' : 'Beauty'
-  } collection visual">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Wholesale garment collection visual">
   <defs>
 ${bannerDefs(w, h)}
   </defs>
@@ -138,10 +121,7 @@ ${bannerDefs(w, h)}
     <rect width="${w}" height="${h}" fill="url(#ground)"/>
     <g opacity="0.5">${rules(w, h, 26, 0.05)}</g>
     <rect width="${w}" height="${h}" fill="url(#glow)"/>
-    <g>${arcs(fashion ? 820 : 180, fashion ? 160 : 660, [110, 170, 240, 320, 410], {
-      base: 0.24,
-      step: 0.03,
-    })}</g>
+    <g>${arcs(820, 160, [110, 170, 240, 320, 410], { base: 0.24, step: 0.03 })}</g>
     ${motif}
     <path d="M0 ${h} L${w} ${h} L${w} ${h - 300} C${w * 0.7} ${h - 190} ${w * 0.3} ${
     h - 150
@@ -168,29 +148,6 @@ const TILE_MOTIFS = {
     <path d="M300 214 L300 676" class="thin"/>`,
   tops: `<path d="M300 210 C274 210 254 217 244 224 L192 250 C182 255 179 267 184 277 L208 337 C212 347 207 357 198 359 L208 420 L200 600 C199 613 210 624 223 624 L377 624 C390 624 401 613 400 600 L392 420 L402 359 C393 357 388 347 392 337 L416 277 C421 267 418 255 408 250 L356 224 C346 217 326 210 300 210 Z"/>
     <path d="M244 224 C264 246 282 255 300 255 C318 255 336 246 356 224" class="thin"/>`,
-  makeup: `<rect x="150" y="300" width="300" height="240" rx="14"/>
-    <rect x="182" y="336" width="76" height="76" rx="6" class="thin"/>
-    <rect x="272" y="336" width="76" height="76" rx="6" class="thin"/>
-    <rect x="362" y="336" width="56" height="76" rx="6" class="thin"/>
-    <rect x="182" y="440" width="76" height="66" rx="6" class="thin"/>
-    <rect x="272" y="440" width="146" height="66" rx="6" class="thin"/>
-    <path d="M262 560 L262 660 M338 560 L338 660" class="thin"/>
-    <rect x="248" y="176" width="104" height="124" rx="14" class="thin"/>`,
-  skincare: `<path d="M226 320 L374 320 L374 620 C374 646 353 666 328 666 L272 666 C247 666 226 646 226 620 Z"/>
-    <rect x="252" y="270" width="96" height="52" rx="8" class="thin"/>
-    <rect x="272" y="180" width="56" height="92" rx="10"/>
-    <path d="M256 430 L344 430 M256 480 L318 480" class="thin"/>
-    <circle cx="300" cy="576" r="34" class="thin"/>`,
-  fragrance: `<path d="M212 350 C212 330 228 314 248 314 L352 314 C372 314 388 330 388 350 L388 622 C388 646 368 666 344 666 L256 666 C232 666 212 646 212 622 Z"/>
-    <rect x="262" y="266" width="76" height="50" rx="6" class="thin"/>
-    <rect x="270" y="176" width="60" height="92" rx="10"/>
-    <circle cx="300" cy="486" r="66" class="thin"/>
-    <path d="M300 442 L313 473 L344 486 L313 499 L300 530 L287 499 L256 486 L287 473 Z"/>`,
-  haircare: `<path d="M234 330 L366 330 L378 626 C379 648 362 666 340 666 L260 666 C238 666 221 648 222 626 Z"/>
-    <rect x="256" y="278" width="88" height="54" rx="8" class="thin"/>
-    <rect x="272" y="188" width="56" height="92" rx="10"/>
-    <path d="M262 440 L338 440 M262 490 L320 490" class="thin"/>
-    <path d="M150 200 C186 250 186 300 150 350 M450 200 C414 250 414 300 450 350" class="thin"/>`,
 };
 
 function tile(key) {
@@ -273,18 +230,14 @@ ${bannerDefs(w, h)}
 module.exports = {
   banners: {
     'hero-home': heroBanner(),
-    'tile-fashion': splitTile('fashion'),
-    'tile-beauty': splitTile('beauty'),
+    'tile-fashion': splitTile(),
     'banner-about': wideBanner(1920, 620),
-    'banner-shop': wideBanner(1920, 480),
+    'banner-catalogue': wideBanner(1920, 480),
+    'banner-wholesale-process': wideBanner(1920, 480),
     'og-image': shareCard(),
     'cat-dresses': tile('dresses'),
     'cat-coords': tile('coords'),
     'cat-abayas': tile('abayas'),
     'cat-tops': tile('tops'),
-    'cat-makeup': tile('makeup'),
-    'cat-skincare': tile('skincare'),
-    'cat-fragrance': tile('fragrance'),
-    'cat-haircare': tile('haircare'),
   },
 };

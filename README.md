@@ -1,13 +1,18 @@
-# Hadaf Venture — E-Commerce Website
+# Hadaf Venture Trading — Wholesale Garment Website
 
-Production website for **Hadaf Venture**, a fashion and beauty retailer based in Dubai, UAE.
+Production website for **Hadaf Venture Trading LLC**, a wholesale garment supplier based in
+Dubai, UAE, serving retailers, distributors and boutiques across the UAE and GCC.
 
 - **Domain:** hadafventureforclothing.com
-- **Tagline:** Everyday Style, Effortless Beauty.
-- **Built from:** `Hadaf_Venture_Website_Specification.md` (Version 3 — Final, Implementation Ready)
+- **Tagline:** Wholesale Garment Supplier in the UAE
 
-The site is a **fully static build**: 16 page templates, 38 products, no server runtime, no
-database, no external services. It deploys to any static host.
+This is a **B2B catalogue and lead-generation site, not a retail store.** There is no cart,
+checkout or payment processing — pricing is quotation-based ("Price on Request"), and every
+product page drives toward a **Request a Quote** form or a **WhatsApp enquiry**. See §6 for
+why, and what a future e-commerce/buyer-portal layer would need.
+
+The site is a **fully static build**: 11 page templates, 21 garment products, no server
+runtime, no database, no external services. It deploys to any static host.
 
 ---
 
@@ -37,7 +42,9 @@ Other commands:
 | `node serve.js 8080` | Serve on a specific port |
 
 > `serve.js` is a local convenience only. Production needs no Node process —
-> `dist/` is plain HTML, CSS, JS and SVG.
+> `dist/` is plain HTML, CSS, JS and SVG. There are no serverless functions in
+> this build (an earlier Stripe checkout integration was removed as part of
+> the wholesale pivot — see §6).
 
 **Note on opening files directly:** pages reference assets from the site root
 (`/assets/...`), so open the site through `npm start` rather than
@@ -57,14 +64,15 @@ double-clicking `dist/index.html`.
 | Publish / output directory | `dist` |
 | Node version | 16 or newer |
 
-`dist/_redirects` is generated automatically so unknown URLs serve the styled
-404 page on Netlify and Cloudflare Pages.
+`dist/_redirects` is generated automatically, covering both the styled 404 page
+and 301 redirects from the site's earlier retail-era URLs (`/shop/`, `/cart/`,
+`/checkout/`, the old policy page names) to their nearest wholesale equivalent.
 
 ### Traditional / cPanel shared hosting
 
 Run `npm run build` locally, then upload the **contents** of `dist/` into
-`public_html/`. A `.htaccess` is generated with the 404 handler, pretty-URL
-redirects and gzip compression already configured.
+`public_html/`. A `.htaccess` is generated with the same redirects, the 404
+handler, pretty-URL redirects and gzip compression already configured.
 
 ### Pointing the domain
 
@@ -75,63 +83,62 @@ host's free TLS certificate. The site is already canonical-tagged to
 
 ---
 
-## 3. Where to update the Section 11 placeholder items
+## 3. Where to update business details and wholesale policy
 
-**Everything outstanding lives in one file: [`src/data/site.json`](src/data/site.json).**
+**Everything lives in one file: [`src/data/site.json`](src/data/site.json).**
 Edit the value, run `npm run build`, redeploy. Every page picks the change up —
 nothing is hard-coded per page.
 
-Values written in `[square brackets]` are **intentionally visible** on the live
-site, styled in champagne so they read as deliberate rather than broken (per
-Specification Section 1). Replace the string with the real value; do not delete
-the key.
-
-| Section 11 item | Key in `site.json` | Appears on |
+| Item | Key in `site.json` | Appears on |
 |---|---|---|
-| Phone / WhatsApp number | `phone` | Footer, Contact, Returns policy, Privacy policy, Terms, mobile drawer, Shipping policy |
-| Registered Dubai address | `address` | Footer, Contact, Returns policy, Privacy policy, Terms |
-| Trade License number | `tradeLicense` | Footer bottom bar, Terms & Conditions §1 |
+| Phone / WhatsApp number | `phone`, `phoneIntl` | Footer, Contact, every product page, Enquiry page, Delivery & Payment Terms, WhatsApp deep links site-wide |
+| Registered Dubai address | `address` | Footer, Contact (incl. the map embed), legal pages |
+| Trade License number | `tradeLicense` | Footer, Trade Terms & Conditions §1 |
 | Business hours | `businessHours` | Contact Us |
+| Legal entity name | `legalName` | Footer, legal-document letterhead and self-identification sentences, structured data |
 | Social media handles | `social[].href` | Footer, Contact Us (currently `#`) |
+| **MOQ** | `wholesale.moq` | Every product page, catalogue, Wholesale Process, About, FAQ, Trade Terms |
+| **Packaging** | `wholesale.packaging` | Every product page, Wholesale Process, Delivery & Payment Terms |
+| **Lead time** | `wholesale.leadTime` | Homepage, every product page, Wholesale Process, FAQ, Delivery & Payment Terms |
+| **Supply region (UAE/GCC)** | `wholesale.supplyRegion` | Homepage, every product page, Wholesale Process, FAQ, Delivery & Payment Terms |
+| **Quote validity** | `wholesale.quoteValidity` | Enquiry page, Trade Terms & Conditions |
+| **Sample availability note** | `wholesale.sampleNote` | Wholesale Process, FAQ, Trade Terms |
+| WhatsApp message templates | `whatsappTemplates.general` / `.product` | Every WhatsApp CTA site-wide (the product one has `{name}`/`{sku}` placeholders) |
 
-### The remaining Section 11 items
+These `wholesale.*` values are **sensible starting defaults**, not fabricated
+per-product figures — update them here once real MOQ, packaging and lead-time
+policy is confirmed, and every page that mentions them updates automatically.
 
-**Real product photography.** In progress — 34 of 38 products (68 of the ~76
-minimum images) have real photography as of this build; all 21 Fashion
-products are complete, along with 13 of 17 Beauty products. The remaining 4
-(both bath & body items not yet photographed, the hair serum, and the makeup
-brush set) still show the generated placeholder visuals until more arrive.
+Values written in `[square brackets]` are **intentionally visible** on the live
+site, styled in champagne so they read as deliberate rather than broken.
+Replace the string with the real value; do not delete the key.
 
-To add or replace a product's photos, drop the files into
+### Real product photography
+
+21 of 21 products have real photography as of this build. To add or replace a
+product's photos, drop the files into
 [`src/data/product-photos/`](src/data/product-photos/) named
 `{product-id}-1.jpg` (and `-2`, `-3` — jpg/jpeg/png/webp all work), matching
-the aspect ratio used elsewhere (**garments 4:5**, **cosmetics 1:1**), then
-`npm run build`. That's the only step — `src/lib/real-photos.js` detects the
-files automatically, `src/lib/products.js` swaps them into that product's
-gallery, and every page, card and JSON-LD block that references the product
-picks it up with no further changes.
+the **4:5** aspect ratio used for garments, then `npm run build`.
+`src/lib/real-photos.js` detects the files automatically and every page, card
+and JSON-LD block that references the product picks it up with no further
+changes. A product with **any** real photo uses *only* its real photos, never
+mixed with a generated placeholder within the same gallery.
 
-A product with **any** real photo uses *only* its real photos (never mixed
-with a generated one) — so a product with just 1 of its eventual 2–3 photos
-will show a single-image gallery in the meantime, rather than pairing a real
-photo with a cartoon one. That's intentional: an honest partial gallery beats
-an inconsistent one (Spec 2).
+Beauty product photos from before the pivot (`hv-be-*` files) are left in
+`src/data/product-photos/` and `src/data/brand-photos/`, unreferenced — they
+aren't deleted in case a beauty line returns later, but nothing on the live
+site loads them today.
 
-**Brand banners (hero, About, and the 8 "Shop by Category" tiles).** The same
-swap-in mechanism, applied to `src/lib/banners.js`'s generated visuals. Drop a
-file into [`src/data/brand-photos/`](src/data/brand-photos/) named after the
-banner's logical key — `hero-home`, `banner-about`, `cat-dresses`,
-`cat-coords`, `cat-abayas`, `cat-tops`, `cat-makeup`, `cat-skincare`,
-`cat-fragrance`, `cat-haircare`, `tile-fashion`, `tile-beauty`, `banner-shop`,
-or `og-image` — and `npm run build` picks it up via `src/lib/real-banners.js`,
-same as products. 10 of 14 banner slots have real photography as of this
-build; `tile-fashion`, `tile-beauty`, `banner-shop` and `og-image` are still
-generated.
+### Brand banners
 
-**Live card payment gateway.** Integrated — see §10 below. It's off by default
-(Card Payment shows disabled/"Coming Soon") until a Stripe secret key is added.
-
-**Order tracking / backend.** See §6 below.
+Same swap-in mechanism, applied to `src/lib/banners.js`'s generated visuals.
+Drop a file into [`src/data/brand-photos/`](src/data/brand-photos/) named
+after the banner's logical key — `hero-home`, `banner-about`,
+`banner-catalogue`, `banner-wholesale-process`, `cat-dresses`, `cat-coords`,
+`cat-abayas`, `cat-tops`, `tile-fashion`, or `og-image` — and `npm run build`
+picks it up via `src/lib/real-banners.js`. 6 of 10 banner slots have real
+photography as of this build.
 
 ---
 
@@ -142,123 +149,122 @@ build.js                  Static site generator (zero dependencies)
 serve.js                  Local preview server
 src/
   data/
-    products.json         The 38-product catalog (Appendix A) — single source of truth
-    site.json             Business details + all Section 11 placeholders
+    products.json         The 21-product garment catalogue — single source of truth
+    site.json             Business details, Section-11 placeholders, wholesale policy
+    product-photos/       Real product photography (+ dormant hv-be-* beauty photos)
+    brand-photos/         Real banner photography
   lib/
     layout.js             Page shell: <head>, announcement bar, header, drawer, footer
     components.js         Product card, grids, rails, section headers, empty states
-    products.js           Catalog data layer: slugs, image paths, feature bullets
-    images.js             Product imagery system (Spec 3.5)
-    banners.js            Hero, category tiles and share-card visuals
+    products.js            Catalog data layer: slugs, image paths, feature + MOQ rows
+    images.js             Generated placeholder visual system (used only if a product
+                          has no real photo yet — none currently need it)
+    banners.js            Hero, category tile and share-card visuals
+    real-photos.js        Real-photo swap-in lookup for products
+    real-banners.js       Real-photo swap-in lookup for banners
     icons.js              The single line-style icon set (1.5px stroke)
   pages/
-    home.js  shop.js  product.js  commerce.js  content.js  policies.js
+    home.js  catalogue.js  product.js  enquiry.js  wholesale-process.js
+    content.js (About/Contact/FAQ/404)  policies.js (legal pages)
   assets/
-    css/main.css          The complete design system (Spec 3)
-    js/                   site.js, shop.js, product.js, cart.js, checkout.js,
-                          confirmation.js, contact.js
+    css/main.css          The complete design system
+    js/                   site.js, catalogue.js, product.js, enquiry.js, contact.js
 dist/                     Build output — this is what you deploy
 ```
 
-### The 16 pages
+### The 11 pages
 
-| # | Page | URL |
-|---|---|---|
-| 1 | Homepage | `/` |
-| 2 | Shop — All Products | `/shop/` |
-| 3 | Shop — Fashion | `/shop/fashion/` |
-| 4 | Shop — Beauty | `/shop/beauty/` |
-| 5 | Product Detail (template → 38 pages) | `/product/{slug}/` |
-| 6 | Cart | `/cart/` |
-| 7 | Checkout | `/checkout/` |
-| 8 | Order Confirmation | `/order-confirmation/` |
-| 9 | About Us | `/about/` |
-| 10 | Contact Us | `/contact/` |
-| 11 | FAQ | `/faq/` |
-| 12 | Shipping & Delivery Policy | `/shipping-policy/` |
-| 13 | Return & Refund Policy | `/returns-policy/` |
-| 14 | Privacy Policy | `/privacy-policy/` |
-| 15 | Terms & Conditions | `/terms-conditions/` |
-| 16 | 404 Not Found | `/404.html` |
+| Page | URL |
+|---|---|
+| Homepage | `/` |
+| Wholesale Catalogue | `/catalogue/` |
+| Product Detail (template → 21 pages) | `/product/{slug}/` |
+| Request a Quote / Wholesale Enquiry | `/enquiry/` |
+| Wholesale Process | `/wholesale-process/` |
+| About Us | `/about/` |
+| Contact Us | `/contact/` |
+| FAQ | `/faq/` |
+| Delivery & Payment Terms | `/delivery-payment-terms/` |
+| Privacy Policy | `/privacy-policy/` |
+| Trade Terms & Conditions | `/trade-terms/` |
+| 404 Not Found | `/404.html` |
 
 The Size Guide is a reusable modal component (not a route), triggered from any
-garment product page and from the FAQ.
+product page and from the FAQ.
 
 ### Editing the catalog
 
 Edit `src/data/products.json` and rebuild. Slugs, URLs, image paths, feature
-bullets, filters, related products, the sitemap and all 38 product pages are
+bullets, filters, related products, the sitemap and all product pages are
 derived automatically. **Never hand-write product markup.**
 
 ---
 
 ## 5. Product imagery
 
-There is no product photography yet, so `src/lib/images.js` generates a
-consistent studio-style SVG visual for every product — 3 per product, 114 total —
-driven by each item's `colorTheme` and `accentTheme` from the catalog.
-
-Every image shares one backdrop treatment, one lighting model (light from the
-upper-left), one champagne brand halo and one contact shadow, so the catalog
-reads as a single commissioned set:
-
-- **View 1** — front-facing product shot
-- **View 2** — styled presentation with a companion element
-- **View 3** — macro material / texture detail with colour swatches
-
-Canvases follow the spec: garments **1000×1250** (4:5), cosmetics **1000×1000** (1:1).
-These are vectors, so they stay crisp at any size and add very little page weight.
+`src/lib/images.js` can still generate a consistent studio-style SVG visual
+for any product that has no real photography yet (garments only, 4:5 canvas,
+driven by `colorTheme`/`accentTheme`) — the same fallback system used during
+the original build. All 21 current products already have real photography, so
+this path isn't currently exercised, but it activates automatically the
+moment a new product is added without photos.
 
 ---
 
-## 6. What is deferred to post-launch (no backend yet)
+## 6. Why there's no cart, accounts, or tiered pricing (and what a v2 would need)
 
-The front end is complete and behaves like a real store. These four points are
-where a backend plugs in later — each is marked with a `TODO(backend)` comment in
-the code:
+This is a **deliberate, current-stage decision**, not a placeholder waiting on
+a backend:
 
-| Area | Now | Later |
+> "I do not want buyer accounts, automatic tiered pricing or a complex B2B
+> ordering system at this stage. Orders and quotations can be handled
+> manually through the website form, email and WhatsApp. We can add a full
+> buyer portal later once the business has enough wholesale volume."
+
+So today:
+
+| Area | Now | Later (once volume justifies it) |
 |---|---|---|
-| **Cart** | Persisted in `localStorage` | Optional server-side cart. Replace the read/write in `HV.cart` (`src/assets/js/site.js`) |
-| **Orders** | Order object written to a `localStorage` log; Order Confirmation reads the most recent one | `POST` the order to a real API in `src/assets/js/checkout.js`, and clear the cart only once the server confirms |
-| **Contact form** | Validates, then opens the customer's email client pre-filled to info@hadafventureforclothing.com (`mailto:` approach, Spec 7.4a) | Replace `buildMailto()` in `src/assets/js/contact.js` with a `fetch()` POST to Formspree or a serverless function |
-| **Newsletter** | Validates the address and confirms interest — it never claims to have sent anything | POST to a real list provider in `src/assets/js/site.js` (`initNewsletter`) |
+| **Pricing** | "Price on Request" everywhere; no published prices | A tiered/bulk pricing engine, possibly gated behind buyer login |
+| **Ordering** | Request a Quote form (`/enquiry/`) → `mailto:` → handled manually by email/WhatsApp | A real quotation/PO system with buyer accounts and order history |
+| **Buyers** | Anonymous — anyone can submit an enquiry | Registered/verified wholesale buyer accounts |
+| **Contact form** | Validates, then opens the customer's email client pre-filled (`mailto:` approach) | Replace `buildMailto()` in `src/assets/js/enquiry.js` / `contact.js` with a `fetch()` POST to a real backend |
+| **Newsletter** | Validates the address and confirms interest — never claims to have sent anything | POST to a real list provider in `src/assets/js/site.js` (`initNewsletter`) |
 
-Also deferred, by design:
-
-- **Card payment** — integrated (Stripe, see §10), but off until a secret key is
-  configured. Until then it shows exactly as originally spec'd: visible,
-  disabled, marked "Coming Soon", and every order records `Cash on Delivery`.
-- **Promo codes** — the input is present and tells the customer honestly that no
-  codes are currently active. It never silently accepts an invalid code.
-- **Order tracking** — the Shipping policy and FAQ both state that the team
-  confirms and updates orders by WhatsApp or email for now.
+A previous iteration of this site included a full retail cart, checkout and a
+working Stripe card-payment integration (test-mode verified end to end). Both
+were **fully removed** as part of this pivot — a checkout doesn't fit a
+quotation-based wholesale model, and keeping unused payment-processing code
+live was an unnecessary surface area. That work is preserved in git history if
+a future retail or D2C storefront is ever needed alongside the wholesale
+catalogue.
 
 ---
 
-## 7. Business rules encoded in the build
+## 7. Wholesale policy encoded in the build
 
-Change these in `src/data/site.json`; they are not duplicated anywhere.
+Change these in `src/data/site.json`'s `wholesale` block; they are not
+duplicated anywhere else (see §3 for the full list of keys and where each
+appears).
 
-| Rule | Value |
+| Rule | Current value |
 |---|---|
-| Currency | AED, always displayed with 2 decimals (`149.00 AED`) |
-| Delivery fee | AED 15.00 when the subtotal is under AED 150.00 |
-| Free delivery | Subtotal of AED 150.00 **or above** (150.00 exactly qualifies) |
-| Delivery scope | UAE only, 4–5 working days |
-| Returns | 7 days, unused and unopened items only |
-| Payment | Cash on Delivery always live; Card Payment live once Stripe is configured (§10), "Coming Soon" until then |
+| Minimum order quantity | 50 pieces per style (mixed sizes/colours accepted) |
+| Packaging | Polybagged with barcode label, packed in bulk cartons |
+| Lead time | Typically 2–4 weeks for bulk orders (indicative, confirmed per quotation) |
+| Supply region | UAE-wide, GCC export on request |
+| Quote validity | 7 days from date of issue |
 
-Price formatting flows through a single function in each layer — `money()` in
-`src/lib/layout.js` at build time and `HV.money()` at runtime — so no page can
-drift to a different format.
+These are **sensible starting defaults**, written to be genuinely useful on
+day one without fabricating false precision — update them the moment real
+policy is confirmed.
 
 ---
 
 ## 8. Design system
 
 Defined once in [`src/assets/css/main.css`](src/assets/css/main.css) and applied
-across all 16 pages: the Emerald & Champagne palette as CSS custom properties,
+across all 11 pages: the Emerald & Champagne palette as CSS custom properties,
 the type scale (Playfair Display headings / Poppins body), the 4→96px spacing
 scale, radii (4px controls, 12px cards, full-round pills), one elevation style,
 and one line-style icon set at 1.5px stroke.
@@ -277,80 +283,23 @@ support.
 
 ## 9. Notes for the client
 
-- The bracketed `[To be added]` values are **intentional and styled**, confirmed
-  in Specification Section 1 — they are not bugs. Fill them in via
-  `src/data/site.json` (§3 above).
-- The Return & Refund Policy, Privacy Policy and Terms & Conditions contain the
-  final approved copy from Specification Section 9, reproduced verbatim and
-  verified against the source document. If the wording needs to change, replace
-  the whole string in `src/pages/policies.js` rather than editing in place.
-- Cosmetic products deliberately carry **no country-of-origin or manufacturer
-  field**, per Specification Section 1.
-- The Contact page shows a styled "Map available once our address is confirmed"
-  block instead of a map pin, until a real address exists.
-
----
-
-## 10. Card payments (Stripe)
-
-Card Payment at checkout is fully built and gated behind one environment
-variable. With it unset, the site behaves exactly as originally spec'd (Card
-disabled, "Coming Soon"). Set it, redeploy, and Card Payment goes live —
-nothing else to change.
-
-### How it works
-
-1. Customer selects Card Payment and submits the checkout form (same
-   validation as Cash on Delivery).
-2. The browser calls `/api/create-checkout-session` (a Vercel serverless
-   function), which **re-derives every price and the delivery fee from the
-   catalog itself** — nothing about cost is ever trusted from the browser —
-   and asks Stripe to create a Checkout Session.
-3. The browser is redirected to Stripe's own hosted payment page. Card
-   details are entered there, on Stripe's domain — this codebase never
-   receives, handles, or stores a card number, which is what keeps it out of
-   PCI-DSS scope.
-4. Stripe redirects back to `/order-confirmation/?session_id=...`. Before
-   showing anything, the confirmation page calls
-   `/api/verify-checkout-session`, which asks Stripe server-side whether that
-   session actually completed payment. Only on a confirmed `paid` status is
-   the order rendered and the cart cleared — a customer can't fabricate a
-   success screen by editing the URL.
-5. Order details (customer, delivery address, notes) travel as Checkout
-   Session metadata, since this is a static site with no database — Stripe
-   *is* the order record for a card payment, the same way `localStorage` is
-   the order record for Cash on Delivery.
-
-Relevant files: [`api/create-checkout-session.js`](api/create-checkout-session.js),
-[`api/verify-checkout-session.js`](api/verify-checkout-session.js),
-[`api/_stripe.js`](api/_stripe.js) (a ~50-line hand-rolled REST client — no
-`stripe` npm package, keeping the zero-dependency approach used everywhere
-else in this repo), and the `cardEnabled` / `CARD_ENABLED` checks in
-[`src/pages/commerce.js`](src/pages/commerce.js),
-[`src/pages/content.js`](src/pages/content.js) (FAQ),
-[`src/pages/policies.js`](src/pages/policies.js) (Terms & Conditions §5), and
-[`src/lib/layout.js`](src/lib/layout.js) (footer payment badge).
-
-### Turning it on
-
-1. In the Stripe Dashboard, get a **secret key** (`sk_test_...` for testing,
-   `sk_live_...` for real charges).
-2. In the Vercel project → **Settings → Environment Variables**, add
-   `STRIPE_SECRET_KEY` with that value. Never put it in this repo, in
-   `vercel.json`, or in chat — it's a live credential.
-3. Redeploy (env var changes need a new build to take effect, since the
-   enabled/disabled state is decided at build time).
-4. Test with [Stripe's test card numbers](https://stripe.com/docs/testing)
-   (e.g. `4242 4242 4242 4242`, any future expiry, any CVC) while using a
-   `sk_test_...` key — these never touch real money. Switch to `sk_live_...`
-   only once you've placed a full test order end to end.
-
-### Not yet included (reasonable next steps, not required to go live)
-
-- **Webhooks** — the confirmation page verifying the session on return covers
-  the normal flow. A Stripe webhook (`checkout.session.completed`) would add
-  resilience for the edge case of a customer closing the tab right after
-  paying but before the redirect completes. Not required to accept payments
-  correctly today.
-- **Refunds** — issued from the Stripe Dashboard directly for now; the Return
-  & Refund Policy already covers the process on the customer-facing side.
+- **The legal pages are a draft, not lawyer-approved boilerplate.** Unlike the
+  original consumer-retail legal copy (which was finalized, client-approved
+  text), the Trade Terms & Conditions, Delivery & Payment Terms and Privacy
+  Policy in [`src/pages/policies.js`](src/pages/policies.js) were drafted to
+  reflect the wholesale pivot, following standard UAE trade-practice
+  conventions (MOQ, quotation-based pricing, bank-transfer payment, a claims
+  process). Payment percentages, deposit terms and dispute specifics should be
+  reviewed by a UAE-qualified commercial lawyer against the business's actual
+  negotiated practice before being treated as final.
+- The bracketed `[To be added]` values are **intentional and styled** — they
+  are not bugs. Fill them in via `src/data/site.json` (§3 above).
+- Cosmetic-specific catalogue fields (shade, ingredients, etc.) no longer
+  render anywhere, since the catalogue is garments-only — the Beauty products
+  themselves are removed from `products.json`, not merely hidden.
+- The Contact page shows a styled "Map available once our address is
+  confirmed" block instead of a map pin, until a real address exists (it
+  currently shows a real embed, since a real address has been provided).
+- Every WhatsApp button site-wide opens a real chat with a pre-filled message
+  — there is nothing to configure beyond keeping `phone`/`phoneIntl` in
+  `site.json` current.

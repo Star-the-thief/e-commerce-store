@@ -887,6 +887,20 @@ button.link-quiet:hover {
   margin-left: auto;
 }
 
+/* The header's own "Request a Quote" CTA is desktop-only — the mobile drawer
+   carries the same call to action, and there isn't room for search + CTA +
+   hamburger together below the nav breakpoint. */
+.header__quote-cta {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .header__quote-cta {
+    display: inline-flex;
+    margin-inline: var(--sp-2);
+  }
+}
+
 .nav ~ .header__actions {
   margin-left: var(--sp-6);
 }
@@ -1310,6 +1324,16 @@ button.link-quiet:hover {
   color: var(--color-champagne);
 }
 
+.pay-badge--whatsapp {
+  transition: background-color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+
+.pay-badge--whatsapp:hover {
+  background: rgba(250, 247, 240, 0.08);
+  border-color: rgba(250, 247, 240, 0.4);
+  color: var(--color-ivory);
+}
+
 /* --------------------------------------------------------------------------
    13. Breadcrumbs + page header
    -------------------------------------------------------------------------- */
@@ -1547,6 +1571,8 @@ button.link-quiet:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  row-gap: var(--sp-1);
   gap: var(--sp-3);
 }
 
@@ -1555,6 +1581,16 @@ button.link-quiet:hover {
   font-weight: 600;
   color: var(--color-emerald);
   font-variant-numeric: tabular-nums;
+}
+
+/* "Price on Request" — a small uppercase label rather than mimicking a real
+   price number, so it reads as a deliberate wholesale-catalogue convention. */
+.pcard__price--quote {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-champagne-dark);
 }
 
 /* --------------------------------------------------------------------------
@@ -2477,6 +2513,21 @@ blockquote.story {
   font-weight: 600;
   color: var(--color-emerald);
   font-variant-numeric: tabular-nums;
+}
+
+/* "Price on Request" — a badge rather than an oversized label mimicking a
+   real price, since there's no number to display. */
+.pdp__price--quote {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-champagne-dark);
+  background: var(--color-champagne-wash);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-pill);
 }
 
 .pdp__short {

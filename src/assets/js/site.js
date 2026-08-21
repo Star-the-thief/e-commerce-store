@@ -1,29 +1,20 @@
 /**
- * Hadaf Venture — shared front-end core
- * =====================================
+ * Hadaf Venture Trading — shared front-end core
+ * ===============================================
  * Loaded on every page. Provides:
- *   - window.HV.cart   localStorage cart + totals (Spec 7.3)
- *   - window.HV.money  the single AED formatter (Spec 1: always 2 decimals)
+ *   - window.HV.money  the single AED formatter, used only where a confirmed
+ *     wholesale price exists (most products show "Price on Request" instead)
  *   - header / drawer / search / accordion / modal / rail / toast behaviour
- *   - quick "Add to Cart" on every product card
+ *   - newsletter signup handling
  *
- * BACKEND NOTE: cart and order state live in localStorage because there is no
- * backend at launch. When a real API exists, replace HV.cart's read/write and
- * HV.orders.save with API calls — the UI reads everything through these
- * functions, so no page or component needs to change.
+ * There is no cart or order system — this is a wholesale enquiry catalogue,
+ * not a retail checkout. Enquiries are handled by /assets/js/enquiry.js and
+ * WhatsApp deep links built server-side per product.
  */
 (function () {
   'use strict';
 
-  var CART_KEY = 'hv_cart_v1';
-  var ORDER_KEY = 'hv_orders_v1';
-  var LAST_ORDER_KEY = 'hv_last_order_v1';
-
-  var CONFIG = window.HV_CONFIG || {
-    deliveryFee: 15,
-    freeDeliveryThreshold: 150,
-    email: 'info@hadafventureforclothing.com',
-  };
+  var CONFIG = window.HV_CONFIG || { email: 'info@hadafventureforclothing.com' };
 
   var PRODUCTS = window.HV_PRODUCTS || [];
   var INDEX = {};
@@ -35,193 +26,16 @@
    * Formatting
    * ---------------------------------------------------------------- */
 
-  /** AED with exactly 2 decimals, everywhere on the site. */
+  /** AED with exactly 2 decimals — shown only when a confirmed price exists. */
   function money(value) {
     return Number(value || 0).toFixed(2) + ' AED';
   }
 
-  /* ---------------------------------------------------------------- *
-   * Cart store
-   * ---------------------------------------------------------------- */
-
-  function safeParse(json, fallback) {
-    try {
-      var v = JSON.parse(json);
-      return v == null ? fallback : v;
-    } catch (e) {
-      return fallback;
-    }
-  }
-
-  function readCart() {
-    var raw = null;
-    try {
-      raw = window.localStorage.getItem(CART_KEY);
-    } catch (e) {
-      /* storage blocked (private mode) — fall back to an in-memory cart */
-    }
-    var items = safeParse(raw, []);
-    if (!Array.isArray(items)) return [];
-    // Drop anything that no longer exists in the catalog.
-    return items.filter(function (line) {
-      return line && INDEX[line.productId] && line.quantity > 0;
-    });
-  }
-
-  var memoryCart = null;
-
-  function writeCart(items) {
-    memoryCart = items;
-    try {
-      window.localStorage.setItem(CART_KEY, JSON.stringify(items));
-    } catch (e) {
-      /* ignore — memoryCart keeps the session working */
-    }
-    document.dispatchEvent(new CustomEvent('hv:cartchange', { detail: { items: items } }));
-  }
-
-  var cart = {
-    /** @returns {Array<{productId, variant, quantity}>} */
-    items: function () {
-      if (memoryCart) return memoryCart.slice();
-      memoryCart = readCart();
-      return memoryCart.slice();
-    },
-
-    /** Lines joined with their catalog product and computed line totals. */
-    detailed: function () {
-      return cart.items().map(function (line) {
-        var p = INDEX[line.productId];
-        return {
-          productId: line.productId,
-          variant: line.variant || '',
-          quantity: line.quantity,
-          product: p,
-          unitPrice: p.price,
-          lineTotal: p.price * line.quantity,
-        };
-      });
-    },
-
-    count: function () {
-      return cart.items().reduce(function (n, l) {
-        return n + l.quantity;
-      }, 0);
-    },
-
-    /**
-     * Totals per Spec 1 / 6.4: delivery is AED 15.00 while subtotal is under
-     * AED 150.00, and free at AED 150.00 or above. An empty cart has no
-     * delivery charge.
-     */
-    totals: function () {
-      var subtotal = cart.detailed().reduce(function (sum, l) {
-        return sum + l.lineTotal;
-      }, 0);
-      subtotal = Math.round(subtotal * 100) / 100;
-
-      var free = subtotal >= CONFIG.freeDeliveryThreshold;
-      var delivery = subtotal === 0 || free ? 0 : CONFIG.deliveryFee;
-
-      return {
-        subtotal: subtotal,
-        delivery: delivery,
-        freeDelivery: free,
-        total: Math.round((subtotal + delivery) * 100) / 100,
-        remainingForFree: Math.max(0, Math.round((CONFIG.freeDeliveryThreshold - subtotal) * 100) / 100),
-      };
-    },
-
-    add: function (productId, variant, quantity) {
-      var p = INDEX[productId];
-      if (!p) return false;
-      var qty = Math.max(1, Math.min(20, parseInt(quantity, 10) || 1));
-      var v = variant || defaultVariant(p);
-      var items = cart.items();
-
-      var existing = null;
-      for (var i = 0; i < items.length; i += 1) {
-        if (items[i].productId === productId && (items[i].variant || '') === v) {
-          existing = items[i];
-          break;
-        }
-      }
-      if (existing) existing.quantity = Math.min(20, existing.quantity + qty);
-      else items.push({ productId: productId, variant: v, quantity: qty });
-
-      writeCart(items);
-      return true;
-    },
-
-    setQuantity: function (productId, variant, quantity) {
-      var qty = Math.max(0, Math.min(20, parseInt(quantity, 10) || 0));
-      var items = cart.items().filter(function (l) {
-        if (l.productId === productId && (l.variant || '') === (variant || '')) {
-          l.quantity = qty;
-          return qty > 0;
-        }
-        return true;
-      });
-      writeCart(items);
-    },
-
-    remove: function (productId, variant) {
-      writeCart(
-        cart.items().filter(function (l) {
-          return !(l.productId === productId && (l.variant || '') === (variant || ''));
-        })
-      );
-    },
-
-    clear: function () {
-      writeCart([]);
-    },
-  };
-
   /** Default variant label for a product with no explicit selection. */
   function defaultVariant(p) {
-    if (p.isGarment && p.sizes && p.sizes.length) return p.sizes[0];
-    if (!p.isGarment && p.shade) return p.shade;
+    if (p.sizes && p.sizes.length) return p.sizes[0];
     return '';
   }
-
-  /* ---------------------------------------------------------------- *
-   * Order log
-   *
-   * TODO(backend): replace with a POST to a real order-submission API.
-   * Everything downstream (order confirmation page) reads through
-   * HV.orders.last(), so only these two functions need to change.
-   * ---------------------------------------------------------------- */
-  var orders = {
-    /** Order reference: HV-<base36 timestamp>-<4 random chars>, uppercased. */
-    reference: function () {
-      var stamp = Date.now().toString(36).toUpperCase();
-      var rand = Math.random().toString(36).slice(2, 6).toUpperCase();
-      return 'HV-' + stamp + '-' + rand;
-    },
-
-    save: function (order) {
-      try {
-        var log = safeParse(window.localStorage.getItem(ORDER_KEY), []);
-        if (!Array.isArray(log)) log = [];
-        log.push(order);
-        window.localStorage.setItem(ORDER_KEY, JSON.stringify(log.slice(-25)));
-        window.localStorage.setItem(LAST_ORDER_KEY, JSON.stringify(order));
-      } catch (e) {
-        /* If storage is unavailable the confirmation page falls back to its
-           designed "no recent order found" state. */
-      }
-      return order;
-    },
-
-    last: function () {
-      try {
-        return safeParse(window.localStorage.getItem(LAST_ORDER_KEY), null);
-      } catch (e) {
-        return null;
-      }
-    },
-  };
 
   /* ---------------------------------------------------------------- *
    * Toasts
@@ -246,18 +60,6 @@
         if (el.parentNode) el.parentNode.removeChild(el);
       }, 250);
     }, 2600);
-  }
-
-  /* ---------------------------------------------------------------- *
-   * Cart badge
-   * ---------------------------------------------------------------- */
-  function paintCartCount() {
-    var n = cart.count();
-    document.querySelectorAll('[data-cart-count]').forEach(function (el) {
-      el.textContent = String(n);
-      if (n > 0) el.removeAttribute('hidden');
-      else el.setAttribute('hidden', '');
-    });
   }
 
   /* ---------------------------------------------------------------- *
@@ -329,7 +131,7 @@
       if (e.key === 'Escape' && drawer.classList.contains('is-open')) close();
     });
 
-    // Expose so the shop filter drawer can reuse the same scrim.
+    // Expose so the catalogue filter drawer can reuse the same scrim.
     window.HV_closeDrawer = close;
   }
 
@@ -358,7 +160,7 @@
   }
 
   /* ---------------------------------------------------------------- *
-   * Size guide modal (Spec 7.6) — one component, many triggers
+   * Size guide modal — one component, many triggers
    * ---------------------------------------------------------------- */
   function initModals() {
     var modal = document.querySelector('[data-modal]');
@@ -416,26 +218,8 @@
   }
 
   /* ---------------------------------------------------------------- *
-   * Quick add-to-cart on product cards (delegated, so it also works on
-   * grids that shop.js re-renders)
-   * ---------------------------------------------------------------- */
-  function initQuickAdd() {
-    document.addEventListener('click', function (e) {
-      var btn = e.target.closest('[data-quick-add]');
-      if (!btn) return;
-      e.preventDefault();
-      var id = btn.getAttribute('data-quick-add');
-      var p = INDEX[id];
-      if (!p) return;
-      if (cart.add(id, defaultVariant(p), 1)) {
-        toast(p.name + ' added to your cart');
-      }
-    });
-  }
-
-  /* ---------------------------------------------------------------- *
-   * Newsletter (Spec 7.4 option b: validated, clear success state, and a
-   * marked integration point — it never pretends to have sent an email)
+   * Newsletter (validated, clear success state, and a marked integration
+   * point — it never pretends to have sent anything)
    * ---------------------------------------------------------------- */
   function initNewsletter() {
     document.querySelectorAll('[data-newsletter]').forEach(function (form) {
@@ -449,12 +233,11 @@
           input.focus();
           return;
         }
-        // TODO(backend): POST this address to a real newsletter endpoint
-        // (Formspree, Mailchimp, or a serverless function). Until then we
-        // confirm receipt of the intent only — no email is claimed to be sent.
+        // TODO(backend): POST this address to a real mailing-list endpoint
+        // (Mailchimp, or a serverless function). Until then we confirm
+        // receipt of the intent only — no email is claimed to be sent.
         if (msg) {
-          msg.textContent =
-            'Thank you — we have noted your interest. Our newsletter launches shortly and we will be in touch.';
+          msg.textContent = 'Thank you — we have noted your interest and will be in touch with new collections.';
         }
         form.reset();
       });
@@ -465,8 +248,6 @@
    * Public API + boot
    * ---------------------------------------------------------------- */
   window.HV = {
-    cart: cart,
-    orders: orders,
     money: money,
     toast: toast,
     products: PRODUCTS,
@@ -481,18 +262,7 @@
     initAccordions();
     initModals();
     initRails();
-    initQuickAdd();
     initNewsletter();
-    paintCartCount();
-    document.addEventListener('hv:cartchange', paintCartCount);
-    // Keep the badge honest if the cart changes in another tab.
-    window.addEventListener('storage', function (e) {
-      if (e.key === CART_KEY) {
-        memoryCart = null;
-        paintCartCount();
-        document.dispatchEvent(new CustomEvent('hv:cartchange', { detail: { external: true } }));
-      }
-    });
   }
 
   if (document.readyState === 'loading') {

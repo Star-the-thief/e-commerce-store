@@ -1,7 +1,8 @@
 /**
- * Product detail behaviour — Specification Section 6.3.
- * Gallery switching, desktop zoom-on-hover, variant selection, quantity
- * stepper, and add-to-cart with the selected variant.
+ * Product detail behaviour — wholesale catalogue.
+ * Gallery switching, desktop zoom-on-hover, and variant selection (size/colour
+ * shown for reference — there is no cart, so selecting a variant just updates
+ * the on-screen label; buyers request a quote separately).
  */
 (function () {
   'use strict';
@@ -48,67 +49,19 @@
     });
   }
 
-  /* ---------------- Variants ---------------- */
+  /* ---------------- Variants (informational — no cart) ---------------- */
   var variantGroup = scope.querySelector('[data-variant-group]');
   var selectedLabel = scope.querySelector('[data-variant-selected]');
-  var selectedVariant = HV.defaultVariant(product);
 
   if (variantGroup) {
     var options = Array.prototype.slice.call(variantGroup.querySelectorAll('[data-variant-option]'));
-    var pressed = options.filter(function (o) {
-      return o.getAttribute('aria-pressed') === 'true';
-    })[0];
-    if (pressed) selectedVariant = pressed.getAttribute('data-value');
-
     options.forEach(function (opt) {
       opt.addEventListener('click', function () {
         options.forEach(function (o) {
           o.setAttribute('aria-pressed', o === opt ? 'true' : 'false');
         });
-        selectedVariant = opt.getAttribute('data-value');
-        if (selectedLabel) selectedLabel.textContent = selectedVariant;
+        if (selectedLabel) selectedLabel.textContent = opt.getAttribute('data-value');
       });
-    });
-  }
-
-  /* ---------------- Quantity stepper ---------------- */
-  var qtyWrap = scope.querySelector('[data-qty]');
-  var qtyInput = scope.querySelector('[data-qty-input]');
-
-  function clampQty() {
-    var n = parseInt(qtyInput.value, 10);
-    if (isNaN(n) || n < 1) n = 1;
-    if (n > 20) n = 20;
-    qtyInput.value = String(n);
-    qtyWrap.querySelector('[data-qty-dec]').disabled = n <= 1;
-    qtyWrap.querySelector('[data-qty-inc]').disabled = n >= 20;
-    return n;
-  }
-
-  if (qtyWrap && qtyInput) {
-    qtyWrap.querySelector('[data-qty-dec]').addEventListener('click', function () {
-      qtyInput.value = String(Math.max(1, (parseInt(qtyInput.value, 10) || 1) - 1));
-      clampQty();
-    });
-    qtyWrap.querySelector('[data-qty-inc]').addEventListener('click', function () {
-      qtyInput.value = String(Math.min(20, (parseInt(qtyInput.value, 10) || 1) + 1));
-      clampQty();
-    });
-    qtyInput.addEventListener('change', clampQty);
-    clampQty();
-  }
-
-  /* ---------------- Add to cart ---------------- */
-  var addBtn = scope.querySelector('[data-add-to-cart]');
-  if (addBtn) {
-    addBtn.addEventListener('click', function () {
-      var qty = qtyInput ? clampQty() : 1;
-      HV.cart.add(productId, selectedVariant, qty);
-      HV.toast(
-        product.name +
-          (selectedVariant ? ' (' + selectedVariant + ')' : '') +
-          ' added to your cart'
-      );
     });
   }
 })();

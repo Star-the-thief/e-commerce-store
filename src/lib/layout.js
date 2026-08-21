@@ -52,8 +52,8 @@ function phoneLink(variant) {
 
 const NAV = [
   { label: 'Home', href: '/' },
-  { label: 'Shop Fashion', href: '/shop/fashion/' },
-  { label: 'Shop Beauty', href: '/shop/beauty/' },
+  { label: 'Catalogue', href: '/catalogue/' },
+  { label: 'Wholesale Process', href: '/wholesale-process/' },
   { label: 'About Us', href: '/about/' },
   { label: 'Contact Us', href: '/contact/' },
 ];
@@ -90,13 +90,10 @@ function header(active) {
         </nav>
 
         <div class="header__actions">
-          <button class="icon-btn" type="button" data-search-toggle aria-expanded="false" aria-controls="site-search" aria-label="Search products">
+          <button class="icon-btn" type="button" data-search-toggle aria-expanded="false" aria-controls="site-search" aria-label="Search catalogue">
             ${icon('search')}
           </button>
-          <a class="icon-btn" href="/cart/" aria-label="Cart">
-            ${icon('cart')}
-            <span class="cart-count" data-cart-count hidden>0</span>
-          </a>
+          <a class="btn btn--primary btn--sm header__quote-cta" href="/enquiry/">Request a Quote</a>
           <button class="icon-btn nav-toggle" type="button" data-drawer-open aria-expanded="false" aria-controls="mobile-drawer" aria-label="Open menu">
             ${icon('menu')}
           </button>
@@ -105,9 +102,9 @@ function header(active) {
 
       <div class="search-panel" id="site-search">
         <div class="container">
-          <form class="searchbar" action="/shop/" method="get" role="search">
-            <label class="visually-hidden" for="header-search-input">Search products</label>
-            <input class="input" id="header-search-input" type="search" name="q" placeholder="Search dresses, abayas, serums…" autocomplete="off">
+          <form class="searchbar" action="/catalogue/" method="get" role="search">
+            <label class="visually-hidden" for="header-search-input">Search catalogue</label>
+            <input class="input" id="header-search-input" type="search" name="q" placeholder="Search dresses, abayas, co-ords…" autocomplete="off">
             <button class="btn btn--primary" type="submit">Search</button>
           </form>
         </div>
@@ -124,16 +121,16 @@ function header(active) {
         <button class="icon-btn" type="button" data-drawer-close aria-label="Close menu">${icon('close')}</button>
       </div>
       <div class="drawer__body">
-        <form class="searchbar" action="/shop/" method="get" role="search">
-          <label class="visually-hidden" for="drawer-search-input">Search products</label>
-          <input class="input" id="drawer-search-input" type="search" name="q" placeholder="Search products…" autocomplete="off">
+        <form class="searchbar" action="/catalogue/" method="get" role="search">
+          <label class="visually-hidden" for="drawer-search-input">Search catalogue</label>
+          <input class="input" id="drawer-search-input" type="search" name="q" placeholder="Search catalogue…" autocomplete="off">
           <button class="icon-btn" type="submit" aria-label="Search">${icon('search')}</button>
         </form>
         <ul class="drawer__list">
           ${NAV.map((i) => `<li><a href="${i.href}">${esc(i.label)}</a></li>`).join('\n          ')}
           <li><a href="/faq/">FAQ</a></li>
         </ul>
-        <a class="btn btn--primary btn--block" href="/shop/">Shop Now</a>
+        <a class="btn btn--primary btn--block" href="/enquiry/">Request a Quote</a>
       </div>
       <div class="drawer__foot">
         <p><a href="mailto:${esc(site.email)}">${esc(site.email)}</a></p>
@@ -152,13 +149,13 @@ function footerCol(id, title, inner) {
 }
 
 function footer() {
-  const care = footerCol(
-    'f-care',
-    'Customer Care',
+  const wholesale = footerCol(
+    'f-wholesale',
+    'Wholesale',
     `<ul class="footer__links">
-              <li><a href="/contact/">Contact Us</a></li>
-              <li><a href="/shipping-policy/">Shipping &amp; Delivery</a></li>
-              <li><a href="/returns-policy/">Returns &amp; Refunds</a></li>
+              <li><a href="/wholesale-process/">Wholesale Process</a></li>
+              <li><a href="/enquiry/">Request a Quote</a></li>
+              <li><a href="/delivery-payment-terms/">Delivery &amp; Payment Terms</a></li>
               <li><a href="/faq/">FAQ</a></li>
             </ul>`
   );
@@ -168,7 +165,7 @@ function footer() {
     'Legal',
     `<ul class="footer__links">
               <li><a href="/privacy-policy/">Privacy Policy</a></li>
-              <li><a href="/terms-conditions/">Terms &amp; Conditions</a></li>
+              <li><a href="/trade-terms/">Trade Terms &amp; Conditions</a></li>
             </ul>`
   );
 
@@ -177,9 +174,8 @@ function footer() {
     'Company',
     `<ul class="footer__links">
               <li><a href="/about/">About Us</a></li>
-              <li><a href="/shop/">Shop All Products</a></li>
-              <li><a href="/shop/fashion/">Shop Fashion</a></li>
-              <li><a href="/shop/beauty/">Shop Beauty</a></li>
+              <li><a href="/catalogue/">Catalogue</a></li>
+              <li><a href="/contact/">Contact Us</a></li>
             </ul>`
   );
 
@@ -211,7 +207,7 @@ function footer() {
               ${socials}
             </div>
             <form class="newsletter" data-newsletter novalidate>
-              <p>Join our list for new arrivals and offers.</p>
+              <p>Subscribe for new wholesale collections and catalogue updates.</p>
               <div class="newsletter__row">
                 <label class="visually-hidden" for="footer-newsletter">Email address</label>
                 <input class="input" id="footer-newsletter" type="email" name="email" placeholder="Your email address" required>
@@ -228,24 +224,16 @@ function footer() {
             <img src="/assets/img/brand/logo-white.svg" alt="${esc(site.name)}" width="460" height="110">
             <p>${esc(site.description)}</p>
           </div>
-          ${care}
+          ${wholesale}
           ${legal}
           ${company}
           ${touch}
         </div>
 
         <div class="footer__bottom">
-          <div class="pay-badges">
-            <span class="pay-badge">${icon('cash', 'icon icon--sm')} Cash on Delivery</span>
-            ${
-              process.env.STRIPE_SECRET_KEY
-                ? `<span class="pay-badge">${icon('card', 'icon icon--sm')} Card Payment</span>`
-                : `<span class="pay-badge pay-badge--soon">${icon(
-                    'card',
-                    'icon icon--sm'
-                  )} Card Payment <em class="pay-badge__soon">Coming Soon</em></span>`
-            }
-          </div>
+          <a class="pay-badge pay-badge--whatsapp" href="https://wa.me/${esc(site.phoneIntl || '')}?text=${encodeURIComponent(
+    site.whatsappTemplates.general
+  )}">${icon('whatsapp', 'icon icon--sm')} Enquire on WhatsApp</a>
           <div class="footer__legal">
             <span>&copy; ${esc(site.copyrightYear)} ${esc(site.legalName)}. All rights reserved.</span>
             <span>${ph(site.address)}, ${esc(site.addressCity)}</span>
@@ -408,13 +396,13 @@ function crumbs(trail) {
     </nav>`;
 }
 
-/** Value-props strip (Spec 6.1 item 9). */
+/** Value-props strip — the four pillars of the wholesale offer. */
 function valueProps(variant) {
   const items = [
-    ['truck', 'UAE-Wide Delivery', `Delivered across all seven emirates in ${site.deliveryDays}.`],
-    ['refresh', '7-Day Easy Returns', 'Unused, unopened items can be returned within 7 days.'],
-    ['cash', 'Cash on Delivery', 'Pay in cash when your order arrives at your door.'],
-    ['shield', 'Quality Checked', 'Every product is genuine and accurately described.'],
+    ['box', 'Flexible MOQ', site.wholesale.moq],
+    ['globe', 'UAE & GCC Supply', site.wholesale.supplyRegion],
+    ['tag', 'Wholesale Pricing on Request', 'Competitive bulk rates, quoted per order.'],
+    ['shield', 'Reliable Supply', 'Consistent quality and on-time bulk delivery.'],
   ]
     .map(
       (p) => `<div class="prop">
@@ -440,8 +428,8 @@ function newsletterBand() {
       <div class="container">
         <div class="subscribe">
           <span class="eyebrow">Stay in the loop</span>
-          <h2>New arrivals, first look</h2>
-          <p>Subscribe for new collection drops, beauty restocks, and UAE-only offers. No clutter — just the good things.</p>
+          <h2>New collections, first look</h2>
+          <p>Subscribe for new wholesale collections and catalogue updates. No clutter — just what buyers need.</p>
           <form data-newsletter novalidate>
             <label class="visually-hidden" for="band-newsletter">Email address</label>
             <input class="input" id="band-newsletter" type="email" name="email" placeholder="Your email address" required>

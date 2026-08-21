@@ -1,6 +1,6 @@
 'use strict';
 
-/** About, Contact, FAQ and 404 — Specification Sections 6.7, 6.8, 6.9, 6.14. */
+/** About, Contact, FAQ and 404 — wholesale trading company positioning. */
 
 const { site, esc, page, crumbs, ph, phoneLink, valueProps, newsletterBand } = require('../lib/layout');
 const { icon } = require('../lib/icons');
@@ -9,16 +9,16 @@ const catalog = require('../lib/products');
 const { brandImage } = require('../lib/real-banners');
 
 /* ------------------------------------------------------------------ *
- * About Us — Spec 6.7
+ * About Us
  * ------------------------------------------------------------------ */
 function about() {
   const bannerImg = brandImage('banner-about', 1920, 620);
   const storyImg = brandImage('tile-fashion', 1000, 800);
 
   const values = [
-    ['shield', 'Quality', 'Thoughtfully selected products.'],
-    ['tag', 'Affordability', 'Accessible pricing without compromise.'],
-    ['checkCircle', 'Authenticity', 'Genuine products, honest descriptions.'],
+    ['shield', 'Quality', 'Consistent quality control across every bulk order.'],
+    ['truck', 'Reliability', 'Dependable supply and on-time bulk delivery.'],
+    ['tag', 'Competitive Pricing', 'Wholesale rates without compromising on quality.'],
   ]
     .map(
       (v) => `<div class="prop">
@@ -30,10 +30,10 @@ function about() {
     .join('\n            ');
 
   const why = [
-    ['truck', 'UAE-wide delivery'],
-    ['sparkle', 'Curated fashion &amp; beauty collections'],
-    ['refresh', '7-day easy returns'],
-    ['cash', 'Cash on Delivery'],
+    ['box', 'Flexible MOQ'],
+    ['globe', 'UAE &amp; GCC Delivery'],
+    ['tag', 'Competitive Wholesale Pricing'],
+    ['whatsapp', 'Dedicated Wholesale Support'],
   ]
     .map(
       (w) => `<div class="prop">
@@ -49,9 +49,9 @@ function about() {
         <img class="page-hero__img" src="${bannerImg.src}" alt="" width="${bannerImg.width}" height="${bannerImg.height}" loading="eager" decoding="async">
         <div class="container">
           <div class="page-hero__inner">
-            <span class="eyebrow" style="color:var(--color-champagne)">About Hadaf Venture</span>
+            <span class="eyebrow" style="color:var(--color-champagne)">About ${esc(site.legalName)}</span>
             <h1>${esc(site.tagline)}</h1>
-            <p>Fashion and beauty for women across the United Arab Emirates.</p>
+            <p>Garment trading and wholesale supply for retailers, distributors and boutiques across the UAE.</p>
           </div>
         </div>
       </section>
@@ -61,9 +61,11 @@ function about() {
           <div class="split">
             <div class="split__body">
               <span class="eyebrow">Our story</span>
-              <h2>Founded to make style effortless</h2>
+              <h2>A UAE-based garment trading partner</h2>
               <hr class="rule">
-              <blockquote class="story mt-6">"Hadaf Venture was founded to make everyday style and beauty effortless for women across the UAE. We curate fashion and cosmetics that are stylish, well-made, and genuinely affordable — from modest wear and everyday essentials to the beauty products that complete a look. Every piece in our collection is chosen with care, so shopping with us always feels personal, never generic."</blockquote>
+              <blockquote class="story mt-6">"${esc(
+                site.legalName
+              )} is a Dubai-based garment trading company supplying quality women's wear in bulk to retailers, distributors and boutiques across the UAE and the wider GCC. We work with dependable sourcing to keep our catalogue consistent — from everyday essentials to modest wear — so our wholesale partners can rely on steady supply, accurate specifications and fair, transparent pricing on every order."</blockquote>
             </div>
             <div class="split__media">
               <img src="${storyImg.src}" alt="" width="${storyImg.width}" height="${storyImg.height}" loading="lazy" decoding="async">
@@ -85,8 +87,8 @@ function about() {
         <div class="container">
           <div class="section-head section-head--center">
             <div>
-              <span class="eyebrow">The Hadaf Venture promise</span>
-              <h2>Why shop with us</h2>
+              <span class="eyebrow">The ${esc(site.name)} promise</span>
+              <h2>Why partner with us</h2>
               <hr class="rule rule--center">
             </div>
           </div>
@@ -98,13 +100,13 @@ function about() {
 
       <section class="section">
         <div class="container">
-          ${sectionHead('From the collection', 'A few of our favourites', {
-            href: '/shop/',
-            label: 'View all products',
+          ${sectionHead('From the catalogue', 'A few of our popular styles', {
+            href: '/catalogue/',
+            label: 'View full catalogue',
           })}
           ${productGrid(catalog.featured.slice(0, 4))}
           <div class="text-center mt-7">
-            <a class="btn btn--primary" href="/shop/">Explore our Collection</a>
+            <a class="btn btn--primary" href="/catalogue/">View Our Catalogue</a>
           </div>
         </div>
       </section>
@@ -113,8 +115,7 @@ ${newsletterBand()}`;
 
   return page({
     title: 'About Us',
-    description:
-      'Hadaf Venture was founded to make everyday style and beauty effortless for women across the UAE. Read our story, values and delivery promise.',
+    description: `${site.legalName} — a Dubai-based wholesale garment trading company supplying retailers, distributors and boutiques across the UAE and GCC.`,
     active: '/about/',
     canonical: '/about/',
     body,
@@ -122,7 +123,7 @@ ${newsletterBand()}`;
 }
 
 /* ------------------------------------------------------------------ *
- * Contact Us — Spec 6.8
+ * Contact Us
  * ------------------------------------------------------------------ */
 function contact() {
   const details = [
@@ -159,6 +160,10 @@ function contact() {
     )
     .join('\n              ');
 
+  const whatsappHref = `https://wa.me/${site.phoneIntl}?text=${encodeURIComponent(
+    site.whatsappTemplates.general
+  )}`;
+
   const body = `${crumbs([{ label: 'Home', href: '/' }, { label: 'Contact Us' }])}
 
       <section class="section section--tight">
@@ -166,11 +171,11 @@ function contact() {
           <div class="page-head">
             <span class="eyebrow">We'd love to hear from you</span>
             <h1>Contact Us</h1>
-            <p>Questions about an order, sizing, or a product? Send us a message and our team will get back to you. We reply to every enquiry.</p>
+            <p>Questions about wholesale orders, product availability, or a specific style? Send us a message and our team will get back to you. For pricing on a specific product, use <a href="/enquiry/">Request a Quote</a> instead.</p>
           </div>
 
           <div class="contact-layout">
-            <!-- Contact form (Spec 7.4: opens the customer's email client, pre-filled) -->
+            <!-- Contact form: general enquiries. Opens the customer's email client, pre-filled. -->
             <div class="panel">
               <h2 class="panel__title">Send us a message</h2>
               <form data-contact-form novalidate>
@@ -190,7 +195,7 @@ function contact() {
                     <input class="input" id="c-${f}" name="${f}" type="${
                         isEmail ? 'email' : 'text'
                       }" autocomplete="${isEmail ? 'email' : 'name'}" required placeholder="${
-                        isEmail ? 'you@example.com' : 'e.g. Aisha Al Mansoori'
+                        isEmail ? 'you@company.com' : 'e.g. Aisha Al Mansoori'
                       }">
                     <span class="field-error" data-error>${
                       isEmail ? 'Please enter a valid email address.' : 'Please enter your name.'
@@ -234,9 +239,13 @@ function contact() {
                 <ul class="contact-list">
             ${details}
                 </ul>
+                <a class="btn btn--secondary btn--block mt-5" href="${whatsappHref}">${icon(
+    'whatsapp',
+    'icon icon--sm'
+  )} Enquire via WhatsApp</a>
 
                 <!-- Map: a styled placeholder until an address exists, a real embed
-                     once it does (Spec 6.8). site.address is the only source. -->
+                     once it does. site.address is the only source. -->
                 ${
                   /^\[.*\]$/.test(site.address)
                     ? `<div class="map-placeholder">
@@ -258,7 +267,7 @@ function contact() {
 
               <div class="panel mt-5">
                 <h2 class="panel__title">Follow us</h2>
-                <p class="meta">Our social channels are launching alongside the store — links will go live here shortly.</p>
+                <p class="meta">Our social channels are launching alongside the trading company — links will go live here shortly.</p>
                 <div class="mt-4" style="display:flex;gap:var(--sp-2)">
               ${socials}
                 </div>
@@ -268,8 +277,8 @@ function contact() {
                 <h2 class="panel__title">Looking for something specific?</h2>
                 <ul class="footer__links" style="gap:var(--sp-3)">
                   <li><a class="link-quiet" href="/faq/">Read our FAQ</a></li>
-                  <li><a class="link-quiet" href="/shipping-policy/">Shipping &amp; Delivery Policy</a></li>
-                  <li><a class="link-quiet" href="/returns-policy/">Return &amp; Refund Policy</a></li>
+                  <li><a class="link-quiet" href="/wholesale-process/">Wholesale Process</a></li>
+                  <li><a class="link-quiet" href="/delivery-payment-terms/">Delivery &amp; Payment Terms</a></li>
                 </ul>
               </div>
             </div>
@@ -281,8 +290,7 @@ ${valueProps('surface')}`;
 
   return page({
     title: 'Contact Us',
-    description:
-      'Contact Hadaf Venture — email us or send a message through the form. Registered in Dubai, United Arab Emirates.',
+    description: `Contact ${site.legalName} — email us, message on WhatsApp, or send a message through the form. Registered in Dubai, United Arab Emirates.`,
     active: '/contact/',
     canonical: '/contact/',
     body,
@@ -291,44 +299,62 @@ ${valueProps('surface')}`;
 }
 
 /* ------------------------------------------------------------------ *
- * FAQ — Spec 6.9 (final copy, verbatim)
+ * FAQ — wholesale
  * ------------------------------------------------------------------ */
-const CARD_ENABLED = Boolean(process.env.STRIPE_SECRET_KEY);
-
 const FAQS = [
   {
-    q: 'How long does delivery take?',
-    a: 'We currently deliver across the UAE only, with standard delivery in 4–5 working days. Delivery is AED 15.00 for orders under AED 150.00, and free for orders AED 150.00 and above.',
-  },
-  {
-    q: 'What payment methods do you accept?',
-    a: CARD_ENABLED
-      ? 'We accept Cash on Delivery and secure debit/credit card payments via our payment provider, Stripe.'
-      : 'We currently accept Cash on Delivery. Card payment is coming soon.',
-  },
-  {
-    q: 'What is your return policy?',
-    a: 'Items may be returned within 7 days of delivery if unused and in original packaging. Cosmetics and beauty products must be unopened and unused. See our full <a href="/returns-policy/">Return &amp; Refund Policy</a>.',
+    q: 'What is your minimum order quantity (MOQ)?',
+    a: 'Our standard minimum order quantity is {moq}. Contact us if you have a specific requirement in mind.',
     raw: true,
   },
   {
-    q: 'How do I find my size?',
+    q: 'Do you offer samples before a bulk order?',
+    a: '{sampleNote}, so you can confirm quality and fit before committing to a full order.',
+    raw: true,
+  },
+  {
+    q: 'What are your payment terms?',
+    a: 'Payment terms are confirmed at the time of quotation, typically by bank transfer. See our full <a href="/delivery-payment-terms/">Delivery &amp; Payment Terms</a>.',
+    raw: true,
+  },
+  {
+    q: 'Do you deliver across the UAE and GCC?',
+    a: 'Yes — {supplyRegion}.',
+    raw: true,
+  },
+  {
+    q: 'How long does a wholesale order take?',
+    a: '{leadTime}. Exact timelines are confirmed at the time of quotation based on your order size.',
+    raw: true,
+  },
+  {
+    q: 'Can I request a custom quote for a specific style and quantity?',
+    a: 'Yes — use our <a href="/enquiry/">Request a Quote</a> form or message us on WhatsApp with the style and quantity you need.',
+    raw: true,
+  },
+  {
+    q: 'How do I find sizing information?',
     a: 'Each garment product page includes a "Size Guide" link with full measurements.',
     sizeGuide: true,
   },
   {
-    q: 'How do I track my order?',
-    a: 'After placing an order, our team will contact you via WhatsApp or email to confirm and update you on delivery status.',
-  },
-  {
-    q: 'Are your products authentic?',
+    q: 'Are your products genuine and accurately described?',
     a: 'Yes — every product listed is genuine and accurately described. See individual product pages for full details.',
   },
 ];
 
+function fillTemplate(str) {
+  return str
+    .replace('{moq}', site.wholesale.moq)
+    .replace('{sampleNote}', site.wholesale.sampleNote)
+    .replace('{supplyRegion}', site.wholesale.supplyRegion)
+    .replace('{leadTime}', site.wholesale.leadTime);
+}
+
 function faq() {
   const items = FAQS.map((f, i) => {
-    const answer = f.raw ? f.a : esc(f.a);
+    const filled = fillTemplate(f.a);
+    const answer = f.raw ? filled : esc(filled);
     const extra = f.sizeGuide
       ? ` <button class="link-quiet" type="button" data-size-guide>Open the Size Guide</button>`
       : '';
@@ -351,7 +377,7 @@ function faq() {
       mainEntity: FAQS.map((f) => ({
         '@type': 'Question',
         name: f.q,
-        acceptedAnswer: { '@type': 'Answer', text: f.a.replace(/<[^>]+>/g, '') },
+        acceptedAnswer: { '@type': 'Answer', text: fillTemplate(f.a).replace(/<[^>]+>/g, '') },
       })),
     },
   ];
@@ -363,7 +389,7 @@ function faq() {
           <div class="page-head">
             <span class="eyebrow">Help centre</span>
             <h1>Frequently Asked Questions</h1>
-            <p>Everything you need to know about orders, delivery, sizing, payment and returns. Can't find your answer? <a href="/contact/">Get in touch</a>.</p>
+            <p>Everything wholesale buyers need to know about MOQ, samples, payment terms and delivery. Can't find your answer? <a href="/contact/">Get in touch</a>.</p>
           </div>
 
           <div class="acc">
@@ -372,10 +398,10 @@ function faq() {
 
           <div class="panel mt-7">
             <h2 class="panel__title">Still need help?</h2>
-            <p class="meta">Our team is happy to help with sizing, product details, or an existing order.</p>
+            <p class="meta">Our team is happy to help with product details, quotations, or an existing enquiry.</p>
             <div class="empty__actions" style="justify-content:flex-start">
-              <a class="btn btn--primary" href="/contact/">Contact Us</a>
-              <a class="btn btn--secondary" href="/shipping-policy/">Shipping &amp; Delivery</a>
+              <a class="btn btn--primary" href="/enquiry/">Request a Quote</a>
+              <a class="btn btn--secondary" href="/contact/">Contact Us</a>
             </div>
           </div>
         </div>
@@ -383,8 +409,7 @@ function faq() {
 
   return page({
     title: 'FAQ',
-    description:
-      'Answers to common questions about Hadaf Venture delivery times, payment methods, returns, sizing and product authenticity.',
+    description: `Answers to common wholesale questions about ${site.legalName} — MOQ, samples, payment terms, lead times and UAE/GCC delivery.`,
     canonical: '/faq/',
     body,
     sizeGuide: true,
@@ -393,23 +418,23 @@ function faq() {
 }
 
 /* ------------------------------------------------------------------ *
- * 404 — Spec 6.14
+ * 404
  * ------------------------------------------------------------------ */
 function notFound() {
   const body = `      <section class="section">
         <div class="container">
           <div class="notfound">
             <div class="notfound__code">404</div>
-            <h1>This page doesn't exist — but plenty of beautiful things do.</h1>
-            <p>The page you were looking for may have moved, or the link may be out of date. Try a search, or head back into the collection.</p>
-            <form class="searchbar" action="/shop/" method="get" role="search">
-              <label class="visually-hidden" for="nf-search">Search products</label>
-              <input class="input" id="nf-search" type="search" name="q" placeholder="Search dresses, abayas, serums…">
+            <h1>This page doesn't exist — but our catalogue does.</h1>
+            <p>The page you were looking for may have moved, or the link may be out of date. Try a search, or head back into the catalogue.</p>
+            <form class="searchbar" action="/catalogue/" method="get" role="search">
+              <label class="visually-hidden" for="nf-search">Search catalogue</label>
+              <input class="input" id="nf-search" type="search" name="q" placeholder="Search dresses, abayas, co-ords…">
               <button class="btn btn--primary" type="submit">${icon('search', 'icon icon--sm')} Search</button>
             </form>
             <div class="notfound__actions">
               <a class="btn btn--secondary" href="/">Back to Home</a>
-              <a class="btn btn--secondary" href="/shop/">Shop All Products</a>
+              <a class="btn btn--secondary" href="/catalogue/">Browse Catalogue</a>
             </div>
           </div>
         </div>
@@ -417,9 +442,9 @@ function notFound() {
 
       <section class="section section--surface">
         <div class="container">
-          ${sectionHead('While you are here', 'Featured products', {
-            href: '/shop/',
-            label: 'View all products',
+          ${sectionHead('While you are here', 'Popular styles', {
+            href: '/catalogue/',
+            label: 'View full catalogue',
           })}
           ${productGrid(catalog.featured.slice(0, 4))}
         </div>
